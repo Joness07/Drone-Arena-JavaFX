@@ -14,12 +14,12 @@ public class Drone implements Serializable{
 	private Direction dir;
 	private int rad = 8;
 	private char col = 'r';
-	private float angle;
+	private double angle;
 	private float speed = 2;
 	private int xSize = 400;//Arena.getXsize(); //fetches xSize
 	private int ySize = 500;//Arena.getYsize(); //fetches YSize
 
-	public Drone(int i, int j, float a) {
+	public Drone(int i, int j, double a) {
 		// TODO Auto-generated constructor stub
 		droneID = droneCount; //constructor
 		droneCount ++;
@@ -60,12 +60,16 @@ public class Drone implements Serializable{
 		ypos += speed * Math.sin(radAngle);		// new Y position
 	}
 	public void checkBall(int xSize, int ySize) {
+		randomGen = new Random();
 		if (xpos < rad || xpos > xSize - rad) {
 			angle = 180 - angle;
 		}
 			// if ball hit (tried to go through) left or right walls, set mirror angle, being 180-angle
 		if (ypos < rad || ypos > ySize - rad) {
 			angle = -angle;
+		}
+		else{
+			angle = randomGen.nextFloat() * 360;
 		}
 			// if ball hit (tried to go through) top or bottom walls, set mirror angle, being -angle
 	}
@@ -74,7 +78,7 @@ public class Drone implements Serializable{
 		mc.showCircle(xpos, ypos, rad, col);
 	}
 	public String toString() {
-		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + angle + " speed " + speed + "\n" ;
+		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + angle + " speed " + speed + "\n";
 		return res; //string for output (drone info)
 	}
 	public int getDroneC(){

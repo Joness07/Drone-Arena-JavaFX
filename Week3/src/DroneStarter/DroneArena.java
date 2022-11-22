@@ -85,7 +85,7 @@ public class DroneArena implements Serializable{
 		randomGen = new Random();
 		int valx = randomGen.nextInt(sizeX); //creates random xPos
 		int valy = randomGen.nextInt(sizeY);
-		float angle = randomGen.nextFloat() * 360;
+		double angle = randomGen.nextFloat() * 360;
 		droneArray.add(new Drone(valx, valy, angle)); //adds drone to array
 	}
 	public String toString() {
