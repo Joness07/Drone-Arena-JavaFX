@@ -39,7 +39,7 @@ public class DroneArena implements Serializable{
 	public boolean checkHit(Drone target) {
 		boolean ans = false;
 		for (Drone b : droneArray)
-			if (b instanceof GameBall && b.hitting(target)) ans = true;
+			if (b instanceof Drone && b.hitting(target)) ans = true;
 				// try all balls, if GameBall, check if hitting the target
 		return ans;
 	}
@@ -54,7 +54,7 @@ public class DroneArena implements Serializable{
 			addDrone();
 		}
 	}
-	public boolean canMoveHere(int x, int y) {
+	public boolean canMoveHere(double x, double y) {
 		if(x>=sizeX||y>=sizeY|| x<0||y<0) { //if out of bounds, return false
 			return false;
 		}
@@ -66,7 +66,14 @@ public class DroneArena implements Serializable{
 			
 		}
 	}
-	public Drone getDroneAt(int x, int y) { //gets drone at location
+	public int getXsize() {
+		return sizeX;
+	}
+	public int getYsize() {
+		return sizeY;
+	}
+	
+	public Drone getDroneAt(double x, double y) { //gets drone at location
 		for(Drone d : droneArray) {
 			if (d.isHere(x, y)) { //if there is a drone at x,y then return d
 				return d;
@@ -77,8 +84,9 @@ public class DroneArena implements Serializable{
 	public void addDrone() {
 		randomGen = new Random();
 		int valx = randomGen.nextInt(sizeX); //creates random xPos
-		int valy = randomGen.nextInt(sizeY); //creates random yPos
-		droneArray.add(new Drone(valx, valy, Direction.randomDirection())); //adds drone to array
+		int valy = randomGen.nextInt(sizeY);
+		float angle = randomGen.nextFloat() * 360;
+		droneArray.add(new Drone(valx, valy, angle)); //adds drone to array
 	}
 	public String toString() {
 		String Astring = "Arena size = " + sizeX + "*" + sizeY +"\n"; //prints arena size

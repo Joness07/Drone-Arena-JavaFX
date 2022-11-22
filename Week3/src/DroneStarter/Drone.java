@@ -2,7 +2,11 @@ package DroneStarter;
 
 import java.io.Serializable;
 
+import java.util.Random;
+
 public class Drone implements Serializable{
+	private Random randomGen;
+	private DroneArena Arena;
 	private int xpos;
 	private int ypos;
 	private int droneID;
@@ -10,35 +14,29 @@ public class Drone implements Serializable{
 	private Direction dir;
 	private int rad = 8;
 	private char col = 'r';
+	private float angle;
+	private float speed = 2;
+	private int xSize = 400;//Arena.getXsize(); //fetches xSize
+	private int ySize = 500;//Arena.getYsize(); //fetches YSize
 
-	public Drone(int i, int j, Direction n) {
+	public Drone(int i, int j, float a) {
 		// TODO Auto-generated constructor stub
 		droneID = droneCount; //constructor
 		droneCount ++;
 		xpos = i;
 		ypos = j;
-		this.dir = n;
+		angle = a;
+		//this.dir = n;
 	}
 	public void displayDrone(ConsoleCanvas c) {
 		c.showIt(xpos, ypos, 'D'); //puts D in s
 	}
 	public void tryToMove(DroneArena a){
-		int dx = 0;
-		int dy = 0;
-		switch(dir) {
-		case North: //north negative y axis
-			dy = -1;
-			break;
-		case East: //east positive x axis
-			dx = 1;
-			break;
-		case South: //south positive y axis
-			dy = 1;
-			break;
-		case West: //west negative x axis
-			dx = -1;
-			break;
-		}
+		double dx = 0;
+		double dy = 0;
+		double radAngle = angle*Math.PI/180;
+		dx = speed * Math.cos(radAngle);
+		dy = speed * Math.sin(radAngle);	
 		boolean canMove = false; //boolean for canMove
 		for(Drone d: a.droneArray) { //checks for each position for each drone.
 			if(d.isHere(xpos + dx, ypos + dy)) { //passes in the new location 
@@ -49,19 +47,34 @@ public class Drone implements Serializable{
 			}
 		}
 		if(canMove) { //if true, move the drone.
-			xpos += dx;
-			ypos += dy;
+			adjustBall();
+			
 		}
 		else {
-			dir = Direction.changeDirection(dir); //if cannot move(border or occupied), change the drones direction
+			checkBall(xSize,ySize);
 		}
+	}
+	public void adjustBall() {
+		double radAngle = angle*Math.PI/180;	// put angle in radians
+		xpos += speed * Math.cos(radAngle);		// new X position
+		ypos += speed * Math.sin(radAngle);		// new Y position
+	}
+	public void checkBall(int xSize, int ySize) {
+		if (xpos < rad || xpos > xSize - rad) {
+			angle = 180 - angle;
+		}
+			// if ball hit (tried to go through) left or right walls, set mirror angle, being 180-angle
+		if (ypos < rad || ypos > ySize - rad) {
+			angle = -angle;
+		}
+			// if ball hit (tried to go through) top or bottom walls, set mirror angle, being -angle
 	}
 	
 	public void drawDrone(MyCanvas mc) {
 		mc.showCircle(xpos, ypos, rad, col);
 	}
 	public String toString() {
-		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " direction " + dir.toString() + "\n" ;
+		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + angle + " speed " + speed + "\n" ;
 		return res; //string for output (drone info)
 	}
 	public int getDroneC(){
@@ -79,17 +92,21 @@ public class Drone implements Serializable{
 	public int getID() {
 		return droneID; 
 		}
-	public boolean isHere(int sx, int sy) {
+	public boolean isHere(double sx, double sy) {
 		if((sx == this.xpos)&&(sy == this.ypos)) { //can't create drone
 			return true;
 		}
 		return false;
 	}
-	protected abstract void checkBall(droneArena b);
+	/**
+	 * draw the ball into the interface i
+	 * @param i
+	 */
+	//protected abstract void checkBall(droneArena b);
 	/**
 	 * abstract method for adjusting a ball (?moving it)
 	 */
-	protected abstract void adjustBall();	
+	//protected abstract void adjustBall();	
 	/**
 	 * is ball at ox,oy size or hitting this ball
 	 * @param ox
@@ -104,7 +121,7 @@ public class Drone implements Serializable{
 	public boolean hitting (Drone oDrone) {
 		return hitting(oDrone.getXpos(), oDrone.getYpos(), oDrone.getRad());
 	}
-	
+}
 	/** is ball hitting the other ball
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -112,5 +129,5 @@ public class Drone implements Serializable{
 		Drone b = new Drone(4,7);//creates drone at 4,7
 		System.out.println(d.toString()); //prints drone location of d
 		System.out.println(b.toString());//prints drone location of b*/
-	}
-}
+
+
