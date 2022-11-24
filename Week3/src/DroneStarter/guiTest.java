@@ -139,7 +139,7 @@ public class guiTest extends Application {
 	/** 
 	 * draw the world with ball in it
 	 */
-	public void drawWorld () {
+	public void drawWorld () {	
 	 	mc.clearCanvas();						// set beige colour
 	 	arena.drawArena(mc);
 	}
