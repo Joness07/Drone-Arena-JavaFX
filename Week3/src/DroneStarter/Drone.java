@@ -51,7 +51,8 @@ public class Drone implements Serializable{
 			
 		}
 		else {
-			checkBall(xSize,ySize);
+			angle = checkBall(xSize,ySize);
+			
 		}
 	}
 	public void adjustBall() {
@@ -59,18 +60,24 @@ public class Drone implements Serializable{
 		xpos += speed * Math.cos(radAngle);		// new X position
 		ypos += speed * Math.sin(radAngle);		// new Y position
 	}
-	public void checkBall(int xSize, int ySize) {
+	public double checkBall(int xSize, int ySize) {
 		randomGen = new Random();
+		double ans = angle;
+		double randomBounce = randomGen.nextFloat() * 20 - 10;
 		if (xpos < rad || xpos > xSize - rad) {
-			angle = 180 - angle;
+			ans = 180 - ans;
 		}
 			// if ball hit (tried to go through) left or right walls, set mirror angle, being 180-angle
-		if (ypos < rad || ypos > ySize - rad) {
-			angle = -angle;
+		else if (ypos < rad || ypos > ySize - rad) {
+			ans = -ans;
 		}
-		else{
-			angle = randomGen.nextFloat() * 360;
+		if(ans > 360) {
+			ans = ans - 360; //keeps angle between 0-360
 		}
+		if(ans < 0) {
+			ans = ans + 360;
+		}
+		return ans;
 			// if ball hit (tried to go through) top or bottom walls, set mirror angle, being -angle
 	}
 	
@@ -78,7 +85,8 @@ public class Drone implements Serializable{
 		mc.showCircle(xpos, ypos, rad, col);
 	}
 	public String toString() {
-		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + angle + " speed " + speed + "\n";
+		double rounded = Math.round(angle * 100)/100.0; //two decimal places
+		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + rounded + " speed " + speed + " rad " + rad + "\n";
 		return res; //string for output (drone info)
 	}
 	public int getDroneC(){
