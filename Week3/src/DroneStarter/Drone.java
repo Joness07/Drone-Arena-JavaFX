@@ -31,6 +31,9 @@ public class Drone implements Serializable{
 	public void displayDrone(ConsoleCanvas c) {
 		c.showIt(xpos, ypos, 'D'); //puts D in s
 	}
+	protected void checkBall(DroneArena b) {
+		angle = b.CheckBallAngle(xpos, ypos, rad, angle, droneID);
+	}
 	public void tryToMove(DroneArena a){
 		double dx = 0;
 		double dy = 0;
@@ -42,22 +45,24 @@ public class Drone implements Serializable{
 			if(d.isHere(xpos + dx, ypos + dy)) { //passes in the new location 
 				canMove = false; //false means cannot move here
 			}
-			else if(a.canMoveHere(xpos + dx, ypos + dy)) {
+			else if(a.canMoveHere(xpos + dx, ypos + dy,rad)) {
 				canMove = true; //true set means its free to move
 			}
 		}
-		if(canMove) { //if true, move the drone.
+		if(a.canMoveHere(xpos + dx, ypos + dy,rad)){ //if true, move the drone.
 			adjustBall();
-			
 		}
 		else {
-			checkBall(xSize,ySize);
+			//CheckBallAngle();
+			//checkBall(xSize,ySize);
+			checkBall(a);
 		}
 	}
 	public void adjustBall() {
 		double radAngle = angle*Math.PI/180;	// put angle in radians
 		xpos += speed * Math.cos(radAngle);		// new X position
 		ypos += speed * Math.sin(radAngle);		// new Y position
+		
 	}
 	public void checkBall(int xSize, int ySize) {
 		randomGen = new Random();
@@ -68,10 +73,12 @@ public class Drone implements Serializable{
 		if (ypos < rad || ypos > ySize - rad) {
 			angle = -angle;
 		}
-		else{
-			angle = randomGen.nextFloat() * 360;
-		}
 			// if ball hit (tried to go through) top or bottom walls, set mirror angle, being -angle
+	}
+	//check to see if ball has been hit by another ball
+	
+	public void doHitDrone(Drone d, DroneArena arena) {
+		angle = (angle + 180) % 360;
 	}
 	
 	public void drawDrone(MyCanvas mc) {
@@ -96,12 +103,15 @@ public class Drone implements Serializable{
 	public int getID() {
 		return droneID; 
 		}
+	
 	public boolean isHere(double sx, double sy) {
 		if((sx == this.xpos)&&(sy == this.ypos)) { //can't create drone
 			return true;
 		}
 		return false;
 	}
+
+	
 	/**
 	 * draw the ball into the interface i
 	 * @param i
@@ -119,6 +129,7 @@ public class Drone implements Serializable{
 	 * @return true if hitting
 	 */
 	public boolean hitting(double ox, double oy, double or) {
+		System.out.println("Hitting called");
 		return (ox-xpos)*(ox-xpos) + (oy-ypos)*(oy-ypos) < (or+rad)*(or+rad);
 	}		// hitting if dist between ball and ox,oy < ist rad + or
 	
