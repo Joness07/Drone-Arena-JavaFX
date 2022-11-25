@@ -7,8 +7,8 @@ public class ConsoleCanvas {
 	public ConsoleCanvas(int j, int i) {
 		droneCanvas = new char [i][j]; //creates two dimensional array for canvas
 	}
-	public void showIt(int j, int i, char k) {
-		droneCanvas[i+1][j+1] = k;
+	public void showIt(double xpos, double ypos, char k) {
+		droneCanvas[(int) (ypos+1)][(int) (xpos+1)] = k;
 	}
 	public String toString() {
 		String Cstring = ""; 

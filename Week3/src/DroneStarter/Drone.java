@@ -12,10 +12,12 @@ public class Drone implements Serializable{
 	private int droneID;
 	private static int droneCount;
 	private Direction dir;
-	private int rad = 8;
+	private int rad = 10;
 	private char col = 'r';
 	private double angle;
-	private float speed = 2;
+	private int dxInt = 0;
+	private int dyInt = 0;
+	public int speed = 2;
 	private int xSize = 400;//Arena.getXsize(); //fetches xSize
 	private int ySize = 500;//Arena.getYsize(); //fetches YSize
 
@@ -31,19 +33,43 @@ public class Drone implements Serializable{
 	public void displayDrone(ConsoleCanvas c) {
 		c.showIt(xpos, ypos, 'D'); //puts D in s
 	}
+	protected double checkBall(DroneArena b) {
+		return angle = b.CheckBallAngle(xpos, ypos, rad, angle, droneID);
+	}
+	
 	public void tryToMove(DroneArena a){
-		double dx = 0;
-		double dy = 0;
 		double radAngle = angle*Math.PI/180;
-		dx = speed * Math.cos(radAngle);
-		dy = speed * Math.sin(radAngle);	
+		double dx = speed * Math.cos(radAngle);
+		double dy = speed * Math.sin(radAngle);
+		
+		if(dx< 1) { //rounds to nearest one.
+			dx += 1;
+		}
+		if(dy< 1) {
+			dy += 1;
+		}
+		dxInt = (int)dx;
+		dyInt = (int)dy;
+		double nX = xpos + dxInt;
+		double nY = ypos + dyInt;
+		
 		boolean canMove = false; //boolean for canMove
 		for(Drone d: a.droneArray) { //checks for each position for each drone.
 			if(d.isHere(xpos + dx, ypos + dy)) { //passes in the new location 
 				canMove = false; //false means cannot move here
+				//ONLY FOR CREATION OF NEW DRONES
 			}
-			else if(a.canMoveHere(xpos + dx, ypos + dy)) {
+			if(a.canMoveHere(xpos + dx, ypos + dy, rad)) {
 				canMove = true; //true set means its free to move
+			}
+			if(canMove == true) {
+				//checks second condition if first is fine
+				double cAngle;
+				cAngle = checkBall(a);
+				if(cAngle != angle) {
+					adjustBall();
+					//Angle already adjusted through collision function
+				}
 			}
 		}
 		if(canMove) { //if true, move the drone.
@@ -51,7 +77,7 @@ public class Drone implements Serializable{
 			
 		}
 		else {
-			angle = checkBall(xSize,ySize);
+			angle = adjustAngle(xSize, ySize, nX, nY);
 			
 		}
 	}
@@ -60,21 +86,30 @@ public class Drone implements Serializable{
 		xpos += speed * Math.cos(radAngle);		// new X position
 		ypos += speed * Math.sin(radAngle);		// new Y position
 	}
-	public double checkBall(int xSize, int ySize) {
-		randomGen = new Random();
+	public double adjustAngle(int xSize, int ySize, double nX, double nY) {
 		double ans = angle;
-		double randomBounce = randomGen.nextFloat() * 20 - 10;
-		if (xpos < rad || xpos > xSize - rad) {
+		randomGen = new Random();
+		if(ypos <= rad && nX<= rad || nY <= rad && nX >= xSize - rad || nY >= ySize - rad && nX<= rad || nY >= ySize - rad && nX >= xSize - rad) {
+			//CORNER HIT
+			double randAngle = randomGen.nextFloat() * 90;
+			if(angle>=180) { //if angle over 180
+				ans = ans - 180 + randAngle;
+			}
+			else { //if angle is less than 180.
+				ans = ans + 180;
+			}
+		}
+		if (nX <= rad|| nX >= xSize - rad) {
 			ans = 180 - ans;
 		}
 			// if ball hit (tried to go through) left or right walls, set mirror angle, being 180-angle
-		else if (ypos < rad || ypos > ySize - rad) {
-			ans = -ans;
+		else if (nY <= rad|| nY >= ySize - rad) {
+			ans = 0 - ans;
 		}
-		if(ans > 360) {
-			ans = ans - 360; //keeps angle between 0-360
+		else {
+			System.out.println(droneID + " Option 4");
 		}
-		if(ans < 0) {
+		while(ans<0) {
 			ans = ans + 360;
 		}
 		return ans;
@@ -86,7 +121,7 @@ public class Drone implements Serializable{
 	}
 	public String toString() {
 		double rounded = Math.round(angle * 100)/100.0; //two decimal places
-		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + rounded + " speed " + speed + " rad " + rad + "\n";
+		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + rounded + " speed " + speed + " rad " + rad + "\n" + "dx: " + dxInt + " dx: " + dyInt ;
 		return res; //string for output (drone info)
 	}
 	public int getDroneC(){
@@ -132,6 +167,9 @@ public class Drone implements Serializable{
 	
 	public boolean hitting (Drone oDrone) {
 		return hitting(oDrone.getXpos(), oDrone.getYpos(), oDrone.getRad());
+	}
+	public void doHitDrone(Drone d, DroneArena droneArena) {
+		// TODO Auto-generated method stub
 	}
 }
 	/** is ball hitting the other ball

@@ -11,6 +11,8 @@ public class DroneArena implements Serializable{
 	private int sizeY;
 	private DroneInterface DroneUI;
 	ArrayList<Drone> droneArray = new ArrayList<Drone>();
+	ArrayList<Obstacle> obstacleArray = new ArrayList<Obstacle>();
+	ArrayList<EaterDrone> eaterArray = new ArrayList<EaterDrone>();
 	
 	public void showDrones(ConsoleCanvas c) {
 		for(Drone d: droneArray) { //display all drones, read from drone array
@@ -19,40 +21,37 @@ public class DroneArena implements Serializable{
 	}
 
 	public void drawArena(MyCanvas mc) {
-		for (Drone b : droneArray) b.drawDrone(mc);		// draw all balls
-	}
-	
-	public double CheckBallAngle(double x, double y, double rad, double ang, int notID) {
-		double ans = ang;
-		if (x < rad || x > sizeX - rad) {
-			ans = 180 - ans;
-		}
-			// if ball hit (tried to go through) left or right walls, set mirror angle, being 180-angle
-		if (y < rad || y > sizeY - rad) {
-			ans = - ans;
-		}
-			// if try to go off top or bottom, set mirror angle
-		//System.out.println("HC in CheckBallAngle");
-		for (Drone b : droneArray) {
-//			System.out.println(b.getID());
-//			System.out.println(notID);
-			if (b.getID() != notID && b.hitting(x, y, rad)) {
-				System.out.println("AngleAdjusted");
-				ans = 180*Math.atan2(y-b.getYpos(), x-b.getXpos())/Math.PI;
-				// check all balls except one with given id
-				// if hitting, return angle between the other ball and this one.
-			}
-		}
-		return ans;		// return the angle
+		for (Drone b : droneArray) b.drawDrone(mc);	// draw all balls
+		for (Obstacle o : obstacleArray) o.drawObstacle(mc); //draw all obstacles
+		for (EaterDrone e : eaterArray) e.drawDrone(mc);
 	}
 				// check all balls except one with given id 	
 				// if hitting, return angle between the other ball and this one.
+	public double CheckBallAngle(double x, double y, double rad, double ang, int notID) {
+		double ans = ang;
+		for (Drone d : droneArray) {
+			if (d.getID() != notID && d.hitting(x, y, rad)) {
+				ans = 180*Math.atan2(y-d.getYpos(), x-d.getXpos())/Math.PI;
+			}
+			else if(ans == ang){ //didn't collide with other ball, check for obstacle
+				for(Obstacle o : obstacleArray) {
+					if(o.hittingObs(x,y,rad)) {
+						System.out.println("Collided with Obstacle");
+						ans = 180*Math.atan2(y-d.getYpos(), x-d.getXpos())/Math.PI;
+					}
+				}
+			}
+				// check all balls except one with given id
+				// if hitting, return angle between the other ball and this one.
+		}
+		return ans;		// return the angle
 		
+	}
+
 	public boolean checkHitWithD(Drone target) {
 		boolean ans = false;
 		for (Drone b : droneArray)
 			if (b instanceof Drone && b.hitting(target)) {
-				System.out.println("HC in checkHitWithD");
 				ans = true;
 			}
 				// try all balls, if GameBall, check if hitting the target
@@ -63,7 +62,7 @@ public class DroneArena implements Serializable{
 		sizeX = i; //max size of arena (length)
 		sizeY = j; //max size of arena (height)
 	}
-	public void populateArena() {
+	public void populateArena() { 
 		int max = 10; //adds drones based on "max" number
 		for(int i = 0; i < max; i++) {
 			addDrone();
@@ -71,6 +70,7 @@ public class DroneArena implements Serializable{
 	}
 	public boolean canMoveHere(double x, double y,int rad) {
 		if(x>=sizeX-rad||y>=sizeY-rad|| x<rad||y<rad) { //if out of bounds, return false
+			//ONLY FOR LOCATION OF MOVEMENT
 			return false;
 		}
 		return getDroneAt(x,y) == null;
@@ -78,7 +78,9 @@ public class DroneArena implements Serializable{
 	public void moveAllDrones() { 
 		for(Drone d: droneArray) { //move all drones, read from drone array
 			d.tryToMove(this);
-			
+		}
+		for(EaterDrone e : eaterArray) {
+			e.tryToMove(this);
 		}
 	}
 //	public void checkBalls() {
@@ -112,7 +114,6 @@ public class DroneArena implements Serializable{
 	public Drone getDroneAt(double x, double y) { //gets drone at location
 		for(Drone d : droneArray) {
 			if (d.isHere(x, y)) { //if there is a drone at x,y then return d
-				System.out.println("Collision detected");
 				return d;
 			}
 			
@@ -124,12 +125,28 @@ public class DroneArena implements Serializable{
 			if(d.droneID != this.)
 		}
 	}*/
+	public void clearDrones() {
+		droneArray = null;
+	}
 	public void addDrone() {
 		randomGen = new Random();
 		int valx = randomGen.nextInt(sizeX); //creates random xPos
 		int valy = randomGen.nextInt(sizeY);
 		double angle = randomGen.nextFloat() * 360;
 		droneArray.add(new Drone(valx, valy, angle)); //adds drone to array
+	}
+	public void addEater() {
+		randomGen = new Random();
+		int valx = randomGen.nextInt(sizeX); //creates random xPos
+		int valy = randomGen.nextInt(sizeY);
+		double angle = randomGen.nextFloat() * 360;
+		eaterArray.add(new EaterDrone(valx, valy, angle)); //adds drone to array
+	}
+	public void addObstacle() {
+		randomGen = new Random();
+		int valx = randomGen.nextInt(sizeX); //creates random xPos
+		int valy = randomGen.nextInt(sizeY);//creates random yPos
+		obstacleArray.add(new Obstacle(valx, valy)); //adds obstacle to array
 	}
 	public String toString() {
 		String Astring = "Arena size = " + sizeX + "*" + sizeY +"\n"; //prints arena size

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -20,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -47,6 +49,10 @@ public class guiTest extends Application {
 	    alert.setContentText("RJM's JavaFX Demonstrator");			// give text
 	    alert.showAndWait();										// show box and wait for user to close
 	}
+	
+//	void UpdateSpeed(MouseEvent event) {
+//		sliderValue = (int) speedSlider.getValue();
+//	}
 
 	 /**
 	  * set up the mouse event - when mouse pressed, put ball there
@@ -123,8 +129,24 @@ public class guiTest extends Application {
 	           	drawWorld();
 	       }
 	    });
+	    Button btnEat = new Button("Eater Drone");				// now button for stop
+	    btnEat.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.addEater();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
+	    Button btnObs = new Button("Add Obstacle");				// now button for stop
+	    btnObs.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.addObstacle();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
 	    														// now add these buttons + labels to a HBox
-	    return new HBox(new Label("Run: "), btnStart, btnStop, new Label("Add: "), btnAdd);
+	    return new HBox(new Label("Run: "), btnStart, btnStop, new Label("Add: "), btnAdd, btnEat,btnObs); //btnObs);
 	}
 
 	/**
@@ -184,9 +206,8 @@ public class guiTest extends Application {
 	    
 	    timer = new AnimationTimer() {									// set up timer
 	        public void handle(long currentNanoTime) {					// and its action when on
-	        		arena.moveAllDrones();									// check the angle of all balls								// move all balls
+	        		arena.moveAllDrones();								// check the angle of all balls								// move all balls
 		            drawWorld();										// redraw the world
-		            drawStatus();										// indicate where balls are
 	        }
 	    };
 
