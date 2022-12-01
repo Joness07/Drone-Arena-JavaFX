@@ -98,11 +98,9 @@ public class DroneInterface {
 									oos.close();//close files
 									fos.close();
 								} catch (IOException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							} catch (FileNotFoundException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 	        			}

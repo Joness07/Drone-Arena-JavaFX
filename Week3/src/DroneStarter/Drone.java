@@ -34,7 +34,7 @@ public class Drone implements Serializable{
 		c.showIt(xpos, ypos, 'D'); //puts D in s
 	}
 	protected double checkBall(DroneArena b) {
-		return angle = b.CheckBallAngle(xpos, ypos, rad, angle, droneID);
+		return angle = b.CheckBallAngle(xpos, ypos, rad, angle, droneID, this);
 	}
 	
 	public void tryToMove(DroneArena a){
@@ -67,6 +67,7 @@ public class Drone implements Serializable{
 				double cAngle;
 				cAngle = checkBall(a);
 				if(cAngle != angle) {
+					angle = cAngle;
 					adjustBall();
 					//Angle already adjusted through collision function
 				}
@@ -106,9 +107,6 @@ public class Drone implements Serializable{
 		else if (nY <= rad|| nY >= ySize - rad) {
 			ans = 0 - ans;
 		}
-		else {
-			System.out.println(droneID + " Option 4");
-		}
 		while(ans<0) {
 			ans = ans + 360;
 		}
@@ -121,7 +119,7 @@ public class Drone implements Serializable{
 	}
 	public String toString() {
 		double rounded = Math.round(angle * 100)/100.0; //two decimal places
-		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + rounded + " speed " + speed + " rad " + rad + "\n" + "dx: " + dxInt + " dx: " + dyInt ;
+		String res = "Drone " + droneID + " at x=" +xpos + " y=" + ypos + " angle " + rounded + " speed " + speed + " rad " + rad + "\n";
 		return res; //string for output (drone info)
 	}
 	public int getDroneC(){

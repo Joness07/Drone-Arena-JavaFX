@@ -25,6 +25,11 @@ public class EaterDrone {
 		ypos = j;
 		angle = a;
 	}
+	
+	protected double checkBall(DroneArena b) {
+		return angle = b.CheckBallAngle(xpos, ypos, rad, angle, eaterID);
+	}
+	
 	public void tryToMove(DroneArena a){
 		double radAngle = angle*Math.PI/180;
 		double dx = speed * Math.cos(radAngle);
@@ -42,8 +47,11 @@ public class EaterDrone {
 		double nY = ypos + dyInt;
 		
 		boolean canMove = false; //boolean for canMove
-		if(a.canMoveHere(xpos + dx, ypos + dy, rad)) {
-			canMove = true; //true set means its free to move
+		boolean eatDrone = false;
+		for(EaterDrone e: a.eaterArray) {
+			if(a.canMoveHere(xpos + dx, ypos + dy, rad)) {
+				canMove = true; //true set means its free to move
+			}
 		}
 		if(canMove) {
 			adjustEater();
@@ -116,7 +124,7 @@ public class EaterDrone {
 		return false;
 
 	}
-	public boolean hitting(double ox, double oy, double or) {
+	public boolean hittingEat(double ox, double oy, double or) {
 		return (ox-xpos)*(ox-xpos) + (oy-ypos)*(oy-ypos) < (or+rad)*(or+rad);
 	}
 }

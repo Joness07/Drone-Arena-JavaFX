@@ -13,6 +13,9 @@ public class DroneArena implements Serializable{
 	ArrayList<Drone> droneArray = new ArrayList<Drone>();
 	ArrayList<Obstacle> obstacleArray = new ArrayList<Obstacle>();
 	ArrayList<EaterDrone> eaterArray = new ArrayList<EaterDrone>();
+	ArrayList<Drone> removeArray = new ArrayList<Drone>();
+	ArrayList<Drone> toRemove = new ArrayList<Drone>();
+	//ArrayList<Drone> AddedRDrone
 	
 	public void showDrones(ConsoleCanvas c) {
 		for(Drone d: droneArray) { //display all drones, read from drone array
@@ -27,10 +30,10 @@ public class DroneArena implements Serializable{
 	}
 				// check all balls except one with given id 	
 				// if hitting, return angle between the other ball and this one.
-	public double CheckBallAngle(double x, double y, double rad, double ang, int notID) {
+	public double CheckBallAngle(double x, double y, double rad, double ang, int notID, Drone droneCol) {
 		double ans = ang;
-		for (Drone d : droneArray) {
-			if (d.getID() != notID && d.hitting(x, y, rad)) {
+		for (Drone d : droneArray) { //for each drone...
+			if (d.getID() != notID && d.hitting(x, y, rad)) { //check if drone is not same and if hitting
 				ans = 180*Math.atan2(y-d.getYpos(), x-d.getXpos())/Math.PI;
 			}
 			else if(ans == ang){ //didn't collide with other ball, check for obstacle
@@ -40,6 +43,13 @@ public class DroneArena implements Serializable{
 						ans = 180*Math.atan2(y-d.getYpos(), x-d.getXpos())/Math.PI;
 					}
 				}
+				for(EaterDrone e : eaterArray) {
+					if(e.hittingEat(x,y,rad)) {
+						System.out.println("Collided with Eater");
+						toRemove.add(droneCol);
+					}
+				}
+				
 			}
 				// check all balls except one with given id
 				// if hitting, return angle between the other ball and this one.
@@ -48,6 +58,13 @@ public class DroneArena implements Serializable{
 		
 	}
 
+	public void deleteDrones() {
+		for (Drone b : toRemove) {
+			droneArray.remove(b);
+		}
+		toRemove.clear();
+	}
+	
 	public boolean checkHitWithD(Drone target) {
 		boolean ans = false;
 		for (Drone b : droneArray)

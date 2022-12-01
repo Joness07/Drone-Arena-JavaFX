@@ -46,7 +46,7 @@ public class guiTest extends Application {
 	    Alert alert = new Alert(AlertType.INFORMATION);				// define what box is
 	    alert.setTitle("About");									// say is About
 	    alert.setHeaderText(null);
-	    alert.setContentText("RJM's JavaFX Demonstrator");			// give text
+	    alert.setContentText("Drone Simulator");			// give text
 	    alert.showAndWait();										// show box and wait for user to close
 	}
 	
@@ -206,8 +206,10 @@ public class guiTest extends Application {
 	    
 	    timer = new AnimationTimer() {									// set up timer
 	        public void handle(long currentNanoTime) {					// and its action when on
-	        		arena.moveAllDrones();								// check the angle of all balls								// move all balls
-		            drawWorld();										// redraw the world
+	        		arena.moveAllDrones();
+	        		arena.deleteDrones();// check the angle of all balls								// move all balls
+		            drawWorld();
+		            drawStatus();// redraw the world
 	        }
 	    };
 
