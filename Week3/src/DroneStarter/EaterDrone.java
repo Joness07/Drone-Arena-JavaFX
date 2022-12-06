@@ -13,7 +13,7 @@ public class EaterDrone {
 	private double angle;
 	private int dxInt = 0;
 	private int dyInt = 0;
-	private int speed = 2;
+	private int speed = 1;
 	private int xSize = 400;
 	private int ySize = 500;
 	
@@ -25,12 +25,8 @@ public class EaterDrone {
 		ypos = j;
 		angle = a;
 	}
-	
-	protected double checkBall(DroneArena b) {
-		return angle = b.CheckBallAngle(xpos, ypos, rad, angle, eaterID);
-	}
-	
 	public void tryToMove(DroneArena a){
+		speed = guiTest.sliderValue;
 		double radAngle = angle*Math.PI/180;
 		double dx = speed * Math.cos(radAngle);
 		double dy = speed * Math.sin(radAngle);

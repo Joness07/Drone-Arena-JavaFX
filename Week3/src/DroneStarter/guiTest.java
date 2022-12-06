@@ -3,11 +3,23 @@
  */
 package DroneStarter;
 
+import java.awt.Font;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -28,6 +40,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 
 /**
  * @author shsmchlr
@@ -38,7 +52,9 @@ public class guiTest extends Application {
 	private AnimationTimer timer;								// timer used for animation
 	private VBox rtPane;										// vertical box for putting info
 	private DroneArena arena;
-
+	public static int sliderValue;
+	JFileChooser chooser;
+	FileFilter filter;
 	/**
 	 * function to show in a box ABout the programme
 	 */
@@ -78,14 +94,29 @@ public class guiTest extends Application {
 	
 		Menu mFile = new Menu("File");							// add File main menu
 		MenuItem mExit = new MenuItem("Exit");					// whose sub menu has Exit
+		MenuItem mSave = new MenuItem("Save");
+		MenuItem mLoad = new MenuItem("Load");
 		mExit.setOnAction(new EventHandler<ActionEvent>() {
 		    public void handle(ActionEvent t) {					// action on exit is
 	        	timer.stop();									// stop timer
 		        System.exit(0);									// exit program
 		    }
 		});
-		mFile.getItems().addAll(mExit);							// add exit to File menu
-		
+		mLoad.setOnAction(new EventHandler<ActionEvent>() {
+		    public void handle(ActionEvent t) {					// action on exit is							
+		    	loadArena();
+	            drawWorld();
+	            drawStatus();
+		    }
+		});
+		mSave.setOnAction(new EventHandler<ActionEvent>() {
+		    public void handle(ActionEvent t) {					// action on exit is							
+		    	saveArena();
+	            drawWorld();
+	            drawStatus();
+		    }
+		});
+		mFile.getItems().addAll(mExit, mSave, mLoad);							// add exit to File menu
 		Menu mHelp = new Menu("Help");							// create Help menu
 		MenuItem mAbout = new MenuItem("About");				// add About sub men item
 		mAbout.setOnAction(new EventHandler<ActionEvent>() {
@@ -105,7 +136,12 @@ public class guiTest extends Application {
 	 * @return
 	 */
 	private HBox setButtons() {
-	    Button btnStart = new Button("Start");					// create button for starting
+		
+	
+		String bStyle = "-fx-font-family: Comic Sans; -fx-font-size: 14px; -fx-font-weight: bold;";
+		
+	    Button btnStart = new Button("Start");
+	    btnStart.setStyle(bStyle);
 	    btnStart.setOnAction(new EventHandler<ActionEvent>() {	// now define event when it is pressed
 	        @Override
 	        public void handle(ActionEvent event) {
@@ -114,6 +150,7 @@ public class guiTest extends Application {
 	    });
 
 	    Button btnStop = new Button("Pause");					// now button for stop
+	    btnStop.setStyle(bStyle);
 	    btnStop.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
@@ -122,6 +159,7 @@ public class guiTest extends Application {
 	    });
 
 	    Button btnAdd = new Button("Another Ball");				// now button for stop
+	    btnAdd.setStyle(bStyle);
 	    btnAdd.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
@@ -130,6 +168,7 @@ public class guiTest extends Application {
 	       }
 	    });
 	    Button btnEat = new Button("Eater Drone");				// now button for stop
+	    btnEat.setStyle(bStyle);
 	    btnEat.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
@@ -137,7 +176,17 @@ public class guiTest extends Application {
 	           	drawWorld();
 	       }
 	    });
+	    Button btnHun = new Button("Hunter Drone");				// now button for stop
+	    btnHun.setStyle(bStyle);
+	    btnHun.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.addHunter();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
 	    Button btnObs = new Button("Add Obstacle");				// now button for stop
+	    btnObs.setStyle(bStyle);
 	    btnObs.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
@@ -145,8 +194,33 @@ public class guiTest extends Application {
 	           	drawWorld();
 	       }
 	    });
-	    														// now add these buttons + labels to a HBox
-	    return new HBox(new Label("Run: "), btnStart, btnStop, new Label("Add: "), btnAdd, btnEat,btnObs); //btnObs);
+	    
+		Slider slider = new Slider(0, 10, 2);
+		slider.setPrefWidth(200);
+		slider.setShowTickMarks(true);
+		slider.setShowTickLabels(true);
+		slider.setMajorTickUnit(1);
+		slider.setMinorTickCount(0);
+		slider.setBlockIncrement(1);
+		slider.setSnapToTicks(true);
+		
+		slider.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				sliderValue = (int)slider.getValue();
+			}
+		});
+		
+		Label run = new Label("Run: ");
+		run.setStyle(bStyle);
+		Label add = new Label("Add: ");
+		add.setStyle(bStyle);
+		Label speedLabel = new Label("Speed");
+		speedLabel.setStyle(bStyle);
+		
+		
+	    return new HBox(run, btnStart, btnStop, add, btnAdd, btnEat,btnObs,btnHun, slider, speedLabel);// now add these buttons + labels to a HBox
 	}
 
 	/**
@@ -185,8 +259,29 @@ public class guiTest extends Application {
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+	
+		
+	   	 chooser = new JFileChooser("C:/Users/SamJo/Desktop/DroneIO");
+	   	 filter = new FileFilter() {
+
+				@Override
+				public boolean accept(File f) {
+					if(f.getAbsolutePath().endsWith(".arena")) {
+						return true;
+					}
+					if(f.isDirectory()) {
+						return true;
+					}
+					return false;
+				}
+				public String getDescription() {
+					return "arena";
+				}};
+				chooser.setFileFilter(filter);
+				
 		// TODO Auto-generated method stub
-		primaryStage.setTitle("RJMs attempt at Moving Ball");
+		primaryStage.setTitle("Space Simulator");
+		primaryStage.getIcons().add(new Image("C:/Users/SamJo/Desktop/DroneSimulator/Icon.png"));
 	    BorderPane bp = new BorderPane();
 	    bp.setPadding(new Insets(10, 20, 10, 20));
 
@@ -209,7 +304,7 @@ public class guiTest extends Application {
 	        		arena.moveAllDrones();
 	        		arena.deleteDrones();// check the angle of all balls								// move all balls
 		            drawWorld();
-		            drawStatus();// redraw the world
+		            drawStatus();// redraw the world;
 	        }
 	    };
 
@@ -220,7 +315,7 @@ public class guiTest extends Application {
 		  
 	    bp.setBottom(setButtons());										// set bottom pane with buttons
 
-	    Scene scene = new Scene(bp, 700, 600);							// set overall scene
+	    Scene scene = new Scene(bp, 1000, 900);							// set overall scene
         bp.prefHeightProperty().bind(scene.heightProperty());
         bp.prefWidthProperty().bind(scene.widthProperty());
 
@@ -237,5 +332,61 @@ public class guiTest extends Application {
 	    Application.launch(args);			// launch the GUI
 
 	}
+	
+	public void loadArena() {
+	   	 int returnVal;
+			returnVal = chooser.showOpenDialog(null);
+			if (returnVal == JFileChooser.APPROVE_OPTION) { //stores user chosen file
+				File selFile = chooser.getSelectedFile();
+				if(!selFile.getAbsolutePath().endsWith(".arena")) { //if file is not arena file, display error
+					System.out.println("File not .Arena");
+					return;
+				}
+				try {
+					FileInputStream fis = new FileInputStream(selFile); //creates input stream to read file
+					try {
+						ObjectInputStream ois = new ObjectInputStream(fis); //reads the file input stream as object
+						try {
+							arena = (DroneArena)ois.readObject(); //reading the object stream and storing as droneArena
+							ois.close();//close files
+							fis.close();
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}
+	public void saveArena() {
+	   	 int returnVal;
+			returnVal = chooser.showSaveDialog(null); //opens file directory window
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File selFile = chooser.getSelectedFile();
+				if(!selFile.getAbsolutePath().endsWith(".arena")) {
+					selFile = new File(selFile.getAbsolutePath()+".arena");
+				}
+				try {
+					FileOutputStream fos = new FileOutputStream(selFile); 
+					try {
+						ObjectOutputStream oos = new ObjectOutputStream(fos);
+						oos.writeObject(arena); //writes arena into file
+						oos.close();//close files
+						fos.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
 }

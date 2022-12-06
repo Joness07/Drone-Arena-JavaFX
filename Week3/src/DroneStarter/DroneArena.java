@@ -1,6 +1,18 @@
 package DroneStarter;
 
 import java.util.Random;
+import java.util.Scanner;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -13,6 +25,7 @@ public class DroneArena implements Serializable{
 	ArrayList<Drone> droneArray = new ArrayList<Drone>();
 	ArrayList<Obstacle> obstacleArray = new ArrayList<Obstacle>();
 	ArrayList<EaterDrone> eaterArray = new ArrayList<EaterDrone>();
+	ArrayList<Drone> hunterArray = new ArrayList<Drone>();
 	ArrayList<Drone> removeArray = new ArrayList<Drone>();
 	ArrayList<Drone> toRemove = new ArrayList<Drone>();
 	//ArrayList<Drone> AddedRDrone
@@ -165,20 +178,17 @@ public class DroneArena implements Serializable{
 		int valy = randomGen.nextInt(sizeY);//creates random yPos
 		obstacleArray.add(new Obstacle(valx, valy)); //adds obstacle to array
 	}
+	public void addHunter() {
+		randomGen = new Random();
+		int valx = randomGen.nextInt(sizeX); //creates random xPos
+		int valy = randomGen.nextInt(sizeY);//creates random yPos
+		double angle = randomGen.nextFloat() * 360;
+		hunterArray.add(new HunterDrone(valx, valy, angle)); //adds obstacle to array
+	}
 	public String toString() {
 		String Astring = "Arena size = " + sizeX + "*" + sizeY +"\n"; //prints arena size
 		for(int i = 0; i < droneArray.size(); i++) 
 			Astring += droneArray.get(i);//get drone(i)
 		return Astring;
 	}
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		DroneArena a = new DroneArena(20, 10);	// create drone arena
-		a.populateArena();//populates arena with drones
-		System.out.println(a.toString());	// print where is
-
-	}
-
-
 }

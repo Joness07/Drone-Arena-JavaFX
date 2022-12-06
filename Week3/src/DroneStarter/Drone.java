@@ -11,13 +11,12 @@ public class Drone implements Serializable{
 	private int ypos;
 	private int droneID;
 	private static int droneCount;
-	private Direction dir;
 	private int rad = 10;
 	private char col = 'r';
 	private double angle;
 	private int dxInt = 0;
 	private int dyInt = 0;
-	public int speed = 2;
+	public int speed = 1;
 	private int xSize = 400;//Arena.getXsize(); //fetches xSize
 	private int ySize = 500;//Arena.getYsize(); //fetches YSize
 
@@ -38,6 +37,7 @@ public class Drone implements Serializable{
 	}
 	
 	public void tryToMove(DroneArena a){
+		speed = guiTest.sliderValue;
 		double radAngle = angle*Math.PI/180;
 		double dx = speed * Math.cos(radAngle);
 		double dy = speed * Math.sin(radAngle);
