@@ -16,7 +16,7 @@ public class Drone implements Serializable{
 	private double angle;
 	private int dxInt = 0;
 	private int dyInt = 0;
-	public int speed = 1;
+	public int speed = 2;
 	private int xSize = 400;//Arena.getXsize(); //fetches xSize
 	private int ySize = 500;//Arena.getYsize(); //fetches YSize
 

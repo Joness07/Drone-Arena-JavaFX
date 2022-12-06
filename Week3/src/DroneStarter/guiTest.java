@@ -1,6 +1,3 @@
-/**
- * 
- */
 package DroneStarter;
 
 import java.awt.Font;
@@ -41,6 +38,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -209,6 +207,8 @@ public class guiTest extends Application {
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				sliderValue = (int)slider.getValue();
+
+
 			}
 		});
 		
@@ -289,7 +289,9 @@ public class guiTest extends Application {
 
 	    Group root = new Group();										// create group with canvas
 	    Canvas canvas = new Canvas( 400, 500 );
-	    root.getChildren().add( canvas );
+	    Image bg = new Image("C:/Users/SamJo/Desktop/DroneSimulator/background.jpg");
+	    ImageView mv = new ImageView(bg);
+	    root.getChildren().addAll( mv, canvas );
 	    bp.setLeft(root);												// load canvas to left area
 	
 	    mc = new MyCanvas(canvas.getGraphicsContext2D(), 400, 500);
@@ -315,6 +317,7 @@ public class guiTest extends Application {
 		  
 	    bp.setBottom(setButtons());										// set bottom pane with buttons
 
+	    
 	    Scene scene = new Scene(bp, 1000, 900);							// set overall scene
         bp.prefHeightProperty().bind(scene.heightProperty());
         bp.prefWidthProperty().bind(scene.widthProperty());
@@ -388,5 +391,4 @@ public class guiTest extends Application {
 				}
 			}
 		}
-
 }

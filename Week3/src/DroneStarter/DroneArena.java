@@ -77,6 +77,11 @@ public class DroneArena implements Serializable{
 		}
 		toRemove.clear();
 	}
+	public void setSpeed(int sliderValue){
+		for (Drone b : droneArray) {
+			b.speed=sliderValue;
+		}
+	}
 	
 	public boolean checkHitWithD(Drone target) {
 		boolean ans = false;

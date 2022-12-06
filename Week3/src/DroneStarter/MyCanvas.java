@@ -25,6 +25,8 @@ public class MyCanvas {
     	gc = g;
     	xCanvasSize = xcs;
     	yCanvasSize = ycs;
+    	
+    	gc.drawImage(null, xcs, ycs);
     }
     /**
      * get size in x of canvas
