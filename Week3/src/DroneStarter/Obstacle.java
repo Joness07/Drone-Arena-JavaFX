@@ -1,39 +1,35 @@
 package DroneStarter;
 
-public class Obstacle {
-	private int xpos;
-	private int ypos;
-	private int obstacleID;
-	private static int obstacleCount;
-	private int rad = 10;
-	private char col = 'g';
+public class Obstacle extends Drone {
 
-	public Obstacle(int i, int j){
-		obstacleID = obstacleCount;
-		obstacleCount ++;
-		xpos = i;
-		ypos = j;
+	public Obstacle(int i, int j) {
+		super(i, j, 0);
+		type = 'o';
+		rad = 15;
 	}
-	public void drawObstacle(MyCanvas mc) {
-		mc.showCircle(xpos, ypos, rad, col);
+
+	@Override
+	protected void checkDrone(DroneArena b) {
+		// TODO Auto-generated method stub
+		
 	}
-	public int getObstacleC(){
-		return obstacleCount;  //gets drone count
+
+	@Override
+	protected void adjustDrones() {
+		// TODO Auto-generated method stub
+		
 	}
-	public int getXpos() { //gets xPos of drone
-		return xpos;
+
+	@Override
+	protected void tryToMove(DroneArena a) {
+		// TODO Auto-generated method stub
+	 
 	}
-	public int getYpos() { //gets yPos of drone
-		return ypos;
+
+	@Override
+	protected boolean doHitDrone(Drone d, DroneArena droneArena) {
+		return true;
+		// TODO Auto-generated method stub
+		
 	}
-	public double getRad() { 
-		return rad; //gets ball radius
-		}
-	public int getID() {
-		return obstacleID; 
-		}
-	public boolean hittingObs(double ox, double oy, double or) {
-		return (ox-xpos)*(ox-xpos) + (oy-ypos)*(oy-ypos) < (or+rad)*(or+rad);
-	}	
-	
 }

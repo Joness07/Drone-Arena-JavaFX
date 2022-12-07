@@ -1,5 +1,6 @@
 package DroneStarter;
 
+import java.awt.AlphaComposite;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,7 +46,7 @@ import javafx.scene.layout.StackPane;
  * @author shsmchlr
  * Example with balls, paddles and targets in arena
  */
-public class guiTest extends Application {
+public class GUI extends Application {
 	private MyCanvas mc;
 	private AnimationTimer timer;								// timer used for animation
 	private VBox rtPane;										// vertical box for putting info
@@ -135,7 +136,7 @@ public class guiTest extends Application {
 	 */
 	private HBox setButtons() {
 		
-	
+
 		String bStyle = "-fx-font-family: Comic Sans; -fx-font-size: 14px; -fx-font-weight: bold;";
 		
 	    Button btnStart = new Button("Start");
@@ -156,39 +157,32 @@ public class guiTest extends Application {
 	       }
 	    });
 
-	    Button btnAdd = new Button("Another Ball");				// now button for stop
-	    btnAdd.setStyle(bStyle);
-	    btnAdd.setOnAction(new EventHandler<ActionEvent>() {
+	    Button btnPrey = new Button("Prey");				// now button for stop
+	    btnPrey.setStyle(bStyle);
+	    btnPrey.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
-	           	arena.addDrone();								// and its action to stop the timer
+	           	arena.addPrey();								// and its action to stop the timer
 	           	drawWorld();
 	       }
 	    });
-	    Button btnEat = new Button("Eater Drone");				// now button for stop
-	    btnEat.setStyle(bStyle);
-	    btnEat.setOnAction(new EventHandler<ActionEvent>() {
-	        @Override
-	        public void handle(ActionEvent event) {
-	           	arena.addEater();								// and its action to stop the timer
-	           	drawWorld();
-	       }
-	    });
-	    Button btnHun = new Button("Hunter Drone");				// now button for stop
-	    btnHun.setStyle(bStyle);
-	    btnHun.setOnAction(new EventHandler<ActionEvent>() {
-	        @Override
-	        public void handle(ActionEvent event) {
-	           	arena.addHunter();								// and its action to stop the timer
-	           	drawWorld();
-	       }
-	    });
-	    Button btnObs = new Button("Add Obstacle");				// now button for stop
+	    
+	    Button btnObs = new Button("Obstacle");				// now button for stop
 	    btnObs.setStyle(bStyle);
 	    btnObs.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
-	           	arena.addObstacle();								// and its action to stop the timer
+	           	arena.addObs();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
+	    
+	    Button btnHunt = new Button("Hunter");				// now button for stop
+	    btnHunt.setStyle(bStyle);
+	    btnHunt.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.addHunt();								// and its action to stop the timer
 	           	drawWorld();
 	       }
 	    });
@@ -207,8 +201,6 @@ public class guiTest extends Application {
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				sliderValue = (int)slider.getValue();
-
-
 			}
 		});
 		
@@ -220,7 +212,7 @@ public class guiTest extends Application {
 		speedLabel.setStyle(bStyle);
 		
 		
-	    return new HBox(run, btnStart, btnStop, add, btnAdd, btnEat,btnObs,btnHun, slider, speedLabel);// now add these buttons + labels to a HBox
+	    return new HBox(run, btnStart, btnStop, add, btnPrey, btnObs, btnHunt,slider, speedLabel);// now add these buttons + labels to a HBox
 	}
 
 	/**
@@ -236,7 +228,7 @@ public class guiTest extends Application {
 	 * draw the world with ball in it
 	 */
 	public void drawWorld () {	
-	 	mc.clearCanvas();						// set beige colour
+	 	mc.clearCanvas();// set beige colour
 	 	arena.drawArena(mc);
 	}
 	
@@ -289,9 +281,9 @@ public class guiTest extends Application {
 
 	    Group root = new Group();										// create group with canvas
 	    Canvas canvas = new Canvas( 400, 500 );
-	    Image bg = new Image("C:/Users/SamJo/Desktop/DroneSimulator/background.jpg");
+	    Image bg = new Image("C:/Users/SamJo/Desktop/DroneSimulator/bg.png");
 	    ImageView mv = new ImageView(bg);
-	    root.getChildren().addAll( mv, canvas );
+	    root.getChildren().addAll(mv, canvas);
 	    bp.setLeft(root);												// load canvas to left area
 	
 	    mc = new MyCanvas(canvas.getGraphicsContext2D(), 400, 500);

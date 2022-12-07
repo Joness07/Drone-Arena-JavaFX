@@ -1,9 +1,13 @@
 package DroneStarter;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.TextAlignment;
 
@@ -15,6 +19,7 @@ public class MyCanvas {
 	int xCanvasSize = 512;				// constants for relevant sizes
 	int yCanvasSize = 512;
     GraphicsContext gc; 
+    private static Image preyImage, hunterImage, obsImage;
 
     /**
      * onstructor sets up relevant Graphics context and size of canvas
@@ -25,6 +30,13 @@ public class MyCanvas {
     	gc = g;
     	xCanvasSize = xcs;
     	yCanvasSize = ycs;
+    	try {
+    		preyImage = new Image(new FileInputStream("src/UFO.png"));
+    		hunterImage = new Image(new FileInputStream("src/asteroid.png"));
+    		obsImage = new Image(new FileInputStream("src/star.png"));
+    	}catch(FileNotFoundException e) {
+    		System.out.println("Image not Loaded");
+    	}
     	
     	gc.drawImage(null, xcs, ycs);
     }
@@ -98,9 +110,20 @@ public class MyCanvas {
 	 * @param rad
 	 * @param col
 	 */
-	public void showCircle(double x, double y, double rad, char col) {
-	 	setFillColour(colFromChar(col));									// set the fill colour
-		gc.fillArc(x-rad, y-rad, rad*2, rad*2, 0, 360, ArcType.ROUND);	// fill circle
+	public void showCircle(double x, double y, double rad, char type) {
+		if(type == 'p') {
+			Image i1 = preyImage;
+			gc.setFill(new ImagePattern(i1));
+		}
+		if(type == 'h') {
+			Image i2 = hunterImage;
+			gc.setFill(new ImagePattern(i2));
+		}
+		if(type == 'o') {
+			Image i3 = obsImage;
+			gc.setFill(new ImagePattern(i3));
+		}
+		showCircle(x,y,rad);
 	}
 
 	/**

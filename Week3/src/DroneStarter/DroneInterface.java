@@ -54,7 +54,7 @@ public class DroneInterface {
 	        	switch (ch) {
 	    				case 'A' :
 	    				case 'a' :
-	    					myArena.addDrone();	// add a new drone to arena
+	    					myArena.addBall();	// add a new drone to arena
     						break;
 	        		case 'I' :
 	        		case 'i' :
@@ -146,7 +146,7 @@ public class DroneInterface {
 	    
 	    void doDisplay() {
 	    	myCanvas = new ConsoleCanvas(aX + 2,aY + 2); //displays canvas (two more for borders)
-	    	myArena.showDrones(myCanvas); //show drones function called inside canvas
+	    	//myArena.drawDrones(myCanvas); //show drones function called inside canvas
 	    	System.out.println(myCanvas.toString()); //prints canvas
 	    }
 		 void Animation() {

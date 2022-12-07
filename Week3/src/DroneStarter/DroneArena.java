@@ -22,70 +22,37 @@ public class DroneArena implements Serializable{
 	private int sizeX;
 	private int sizeY;
 	private DroneInterface DroneUI;
-	ArrayList<Drone> droneArray = new ArrayList<Drone>();
-	ArrayList<Obstacle> obstacleArray = new ArrayList<Obstacle>();
-	ArrayList<EaterDrone> eaterArray = new ArrayList<EaterDrone>();
-	ArrayList<Drone> hunterArray = new ArrayList<Drone>();
+	ArrayList<Drone> allDrones = new ArrayList<Drone>();
 	ArrayList<Drone> removeArray = new ArrayList<Drone>();
 	ArrayList<Drone> toRemove = new ArrayList<Drone>();
 	//ArrayList<Drone> AddedRDrone
 	
-	public void showDrones(ConsoleCanvas c) {
-		for(Drone d: droneArray) { //display all drones, read from drone array
-			d.displayDrone(c);
+	public void drawArena(MyCanvas mc) { //DO NOT TOUCH
+		for (Drone b : allDrones) {
+			b.drawDrone(mc);		// draw all balls
 		}
 	}
-
-	public void drawArena(MyCanvas mc) {
-		for (Drone b : droneArray) b.drawDrone(mc);	// draw all balls
-		for (Obstacle o : obstacleArray) o.drawObstacle(mc); //draw all obstacles
-		for (EaterDrone e : eaterArray) e.drawDrone(mc);
-	}
-				// check all balls except one with given id 	
+		// check all balls except one with given id 	
 				// if hitting, return angle between the other ball and this one.
-	public double CheckBallAngle(double x, double y, double rad, double ang, int notID, Drone droneCol) {
+	public double CheckBallAngle(double x, double y, double rad, double ang, int notID) {
 		double ans = ang;
-		for (Drone d : droneArray) { //for each drone...
-			if (d.getID() != notID && d.hitting(x, y, rad)) { //check if drone is not same and if hitting
-				ans = 180*Math.atan2(y-d.getYpos(), x-d.getXpos())/Math.PI;
-			}
-			else if(ans == ang){ //didn't collide with other ball, check for obstacle
-				for(Obstacle o : obstacleArray) {
-					if(o.hittingObs(x,y,rad)) {
-						System.out.println("Collided with Obstacle");
-						ans = 180*Math.atan2(y-d.getYpos(), x-d.getXpos())/Math.PI;
-					}
-				}
-				for(EaterDrone e : eaterArray) {
-					if(e.hittingEat(x,y,rad)) {
-						System.out.println("Collided with Eater");
-						toRemove.add(droneCol);
-					}
-				}
-				
-			}
-				// check all balls except one with given id
-				// if hitting, return angle between the other ball and this one.
-		}
+		if (x < rad || x > sizeX - rad) ans = 180 - ans;
+			// if ball hit (tried to go through) left or right walls, set mirror angle, being 180-angle
+		if (y < rad || y > sizeY - rad) ans = - ans;
+			// if try to go off top or bottom, set mirror angle
 		return ans;		// return the angle
-		
 	}
 
-	public void deleteDrones() {
+	public void deleteDrones() { //Collision (prey hits hunter)
 		for (Drone b : toRemove) {
-			droneArray.remove(b);
+			allDrones.remove(b);
 		}
 		toRemove.clear();
-	}
-	public void setSpeed(int sliderValue){
-		for (Drone b : droneArray) {
-			b.speed=sliderValue;
-		}
 	}
 	
 	public boolean checkHitWithD(Drone target) {
 		boolean ans = false;
-		for (Drone b : droneArray)
+		for (Drone b : allDrones)
 			if (b instanceof Drone && b.hitting(target)) {
 				ans = true;
 			}
@@ -97,45 +64,57 @@ public class DroneArena implements Serializable{
 		sizeX = i; //max size of arena (length)
 		sizeY = j; //max size of arena (height)
 	}
-	public void populateArena() { 
-		int max = 10; //adds drones based on "max" number
-		for(int i = 0; i < max; i++) {
-			addDrone();
-		}
-	}
-	public boolean canMoveHere(double x, double y,int rad) {
+	public boolean canMoveHere(double x, double y,int rad, int ID) {
 		if(x>=sizeX-rad||y>=sizeY-rad|| x<rad||y<rad) { //if out of bounds, return false
-			//ONLY FOR LOCATION OF MOVEMENT
-			return false;
+			return false; //walls
 		}
-		return getDroneAt(x,y) == null;
+		return getDroneAt(x,y,rad, ID) == null;
 	}
+	
 	public void moveAllDrones() { 
-		for(Drone d: droneArray) { //move all drones, read from drone array
+		for(Drone d: allDrones) { //move all drones, read from drone array
 			d.tryToMove(this);
 		}
-		for(EaterDrone e : eaterArray) {
-			e.tryToMove(this);
-		}
 	}
-//	public void checkBalls() {
-//		for (Drone b : droneArray) {
-//			b.checkBall(this);	// check all balls
-//		}
-//	}
 	
-	public void checkDrone(Drone drone) {
-		System.out.println("CheckDoneCalled");
-		for (Drone d: droneArray) {
-			if(d.getID()!=drone.getID() && drone.hitting(d)) {
-				System.out.println("AAA");
-				drone.doHitDrone(d, this);
+	public double adjustAngle(Drone d) {
+		double result = d.angle;
+		if(d.Wantxpos<d.rad || d.Wantxpos>sizeX-d.rad) { //checks for side wall
+			result = 180 - d.angle;
+			System.out.print("Wall \n");
+		}
+		if(d.Wantypos<d.rad || d.Wantypos>sizeY-d.rad) { //checks for top & bottom wall
+			System.out.print("Top/Bottom \n");
+			result = -d.angle;
+		}
+		
+//		if(checkDrone(d)) {
+//			System.out.print("Other Drone");
+//			result = d.angle;
+//		}
+		
+		if(result < 0) {
+			result += 360; //makes result 0-360
+		}
+		if(result >= 360) {
+			result -= 360; //makes result 0-360
+		}
+		return result;
+	}
+	
+	public boolean checkDrone(Drone drone) {
+		for (Drone d: allDrones) {
+			if(d.getID()!=drone.getID()) {
+				 System.out.println("DoHitCalled");
+				 drone.doHitDrone(d, this);
+				 return true;
 			}
 		}
+		return false;
 	}
 	public void adjustBalls() {
-		for (Drone d : droneArray) { //adjust all balls
-			d.adjustBall();
+		for (Drone d : allDrones) { //adjust all balls
+			d.adjustDrones();
 			checkDrone(d);
 		}
 	}
@@ -146,54 +125,75 @@ public class DroneArena implements Serializable{
 		return sizeY;
 	}
 	
-	public Drone getDroneAt(double x, double y) { //gets drone at location
-		for(Drone d : droneArray) {
-			if (d.isHere(x, y)) { //if there is a drone at x,y then return d
-				return d;
+	public Drone getDroneAt(double x, double y, int rad, int ID) { //gets drone at location
+		for(Drone d : allDrones) {
+			if(d.getID()==ID) {
+				continue;
 			}
-			
+			double distance = Math.sqrt(Math.pow(Math.abs(d.xpos - x), 2) + Math.pow(Math.abs(d.ypos - y), 2));
+            if (distance <= d.rad + rad) {
+            	return d;
+            }
 		}
 		return null;
 	}
-	/*public void checkCollision() {
-		for(Drone d : droneArray) {
-			if(d.droneID != this.)
-		}
-	}*/
+
 	public void clearDrones() {
-		droneArray = null;
+		allDrones = null;
 	}
-	public void addDrone() {
+	public void addPrey() {
 		randomGen = new Random();
-		int valx = randomGen.nextInt(sizeX); //creates random xPos
-		int valy = randomGen.nextInt(sizeY);
-		double angle = randomGen.nextFloat() * 360;
-		droneArray.add(new Drone(valx, valy, angle)); //adds drone to array
+		int valx;
+		int valy;
+		double angle;
+		int counter = 0;
+		do {
+			valx = randomGen.nextInt(sizeX); //creates random xPos
+			valy = randomGen.nextInt(sizeY);
+			angle = randomGen.nextFloat() * 360;
+			counter ++;
+		}
+	
+		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
+			allDrones.add(new Prey(valx, valy, angle)); //adds drone to array
 	}
-	public void addEater() {
+	
+	public void addObs() {
 		randomGen = new Random();
-		int valx = randomGen.nextInt(sizeX); //creates random xPos
-		int valy = randomGen.nextInt(sizeY);
-		double angle = randomGen.nextFloat() * 360;
-		eaterArray.add(new EaterDrone(valx, valy, angle)); //adds drone to array
+		int valx;
+		int valy;
+		int counter = 0;
+		do {
+			valx = randomGen.nextInt(sizeX); //creates random xPos
+			valy = randomGen.nextInt(sizeY);
+			counter ++;
+		}
+	
+		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
+			allDrones.add(new Obstacle(valx, valy)); //adds drone to array
 	}
-	public void addObstacle() {
+	public void addHunt() {
 		randomGen = new Random();
-		int valx = randomGen.nextInt(sizeX); //creates random xPos
-		int valy = randomGen.nextInt(sizeY);//creates random yPos
-		obstacleArray.add(new Obstacle(valx, valy)); //adds obstacle to array
+		int valx;
+		int valy;
+		double angle;
+		int counter = 0;
+		do {
+			valx = randomGen.nextInt(sizeX); //creates random xPos
+			valy = randomGen.nextInt(sizeY);
+			angle = randomGen.nextFloat() * 360;
+			counter ++;
+		}
+	
+		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
+			allDrones.add(new Hunter(valx, valy, angle)); //adds drone to array
 	}
-	public void addHunter() {
-		randomGen = new Random();
-		int valx = randomGen.nextInt(sizeX); //creates random xPos
-		int valy = randomGen.nextInt(sizeY);//creates random yPos
-		double angle = randomGen.nextFloat() * 360;
-		hunterArray.add(new HunterDrone(valx, valy, angle)); //adds obstacle to array
-	}
+
+
 	public String toString() {
 		String Astring = "Arena size = " + sizeX + "*" + sizeY +"\n"; //prints arena size
-		for(int i = 0; i < droneArray.size(); i++) 
-			Astring += droneArray.get(i);//get drone(i)
+		for(int i = 0; i < allDrones.size(); i++) 
+			Astring += allDrones.get(i);//get drone(i)
 		return Astring;
 	}
 }
