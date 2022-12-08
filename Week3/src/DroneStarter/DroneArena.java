@@ -23,7 +23,6 @@ public class DroneArena implements Serializable{
 	private int sizeY;
 	private DroneInterface DroneUI;
 	ArrayList<Drone> allDrones = new ArrayList<Drone>();
-	ArrayList<Drone> removeArray = new ArrayList<Drone>();
 	ArrayList<Drone> toRemove = new ArrayList<Drone>();
 	//ArrayList<Drone> AddedRDrone
 	
@@ -186,6 +185,30 @@ public class DroneArena implements Serializable{
 	public void reset() {
 		for(Drone d : allDrones) {
 			toRemove.add(d);
+		}
+		deleteDrones();
+	}
+	public void clearPrey() {
+		for(Drone d : allDrones) {
+			if(d instanceof Prey) {
+				toRemove.add(d);
+			}
+		}
+		deleteDrones();
+	}
+	public void clearObs() {
+		for(Drone d : allDrones) {
+			if(d instanceof Obstacle) {
+				toRemove.add(d);
+			}
+		}
+		deleteDrones();
+	}
+	public void clearHunter() {
+		for(Drone d : allDrones) {
+			if(d instanceof Hunter) {
+				toRemove.add(d);
+			}
 		}
 		deleteDrones();
 	}

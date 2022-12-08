@@ -1,7 +1,5 @@
 package DroneStarter;
 
-import java.awt.AlphaComposite;
-import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,20 +7,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-
+import javafx.application.Application;  
+import javafx.scene.Group;  
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;  
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
@@ -35,17 +32,15 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 
 /**
  * @author shsmchlr
@@ -59,6 +54,7 @@ public class GUI extends Application {
 	public static int sliderValue;
 	JFileChooser chooser;
 	FileFilter filter;
+	MediaPlayer mediaPlayer;
 	/**
 	 * function to show in a box ABout the programme
 	 */
@@ -70,10 +66,6 @@ public class GUI extends Application {
 	    alert.showAndWait();										// show box and wait for user to close
 	}
 	
-//	void UpdateSpeed(MouseEvent event) {
-//		sliderValue = (int) speedSlider.getValue();
-//	}
-
 	 /**
 	  * set up the mouse event - when mouse pressed, put ball there
 	  * @param canvas
@@ -93,6 +85,7 @@ public class GUI extends Application {
 	 * set up the menu of commands for the GUI
 	 * @return the menu bar
 	 */
+	
 	MenuBar setMenu() {
 		MenuBar menuBar = new MenuBar();						// create main menu
 	
@@ -139,8 +132,8 @@ public class GUI extends Application {
 	 * set up the horizontal box for the bottom with relevant buttons
 	 * @return
 	 */
+	
 	private HBox setButtons() {
-		
 
 		String bStyle = "-fx-font-family: Comic Sans; -fx-font-size: 14px; -fx-font-weight: bold;";
 		
@@ -200,6 +193,33 @@ public class GUI extends Application {
 	           	drawWorld();
 	       }
 	    });
+	    Button btnClrPrey = new Button("Clear UFOs");				// now button for stop
+	    btnClrPrey.setStyle(bStyle);
+	    btnClrPrey.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.clearPrey();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
+	    Button btnClrObs = new Button("Clear Stars");				// now button for stop
+	    btnClrObs.setStyle(bStyle);
+	    btnClrObs.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.clearObs();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
+	    Button btnClrHunt = new Button("Clear Asteroids");				// now button for stop
+	    btnClrHunt.setStyle(bStyle);
+	    btnClrHunt.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.clearHunter();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
 	    
 		Slider slider = new Slider(0, 10, 2);
 		slider.setPrefWidth(200);
@@ -222,11 +242,11 @@ public class GUI extends Application {
 		run.setStyle(bStyle);
 		Label add = new Label(" Add: ");
 		add.setStyle(bStyle);
-		Label speedLabel = new Label(" Speed");
+		Label speedLabel = new Label(" Speed ");
 		speedLabel.setStyle(bStyle);
 		
 		
-	    return new HBox(run, btnStart, btnStop, add, btnPrey, btnObs, btnHunt,slider, speedLabel, btnReset);// now add these buttons + labels to a HBox
+	    return new HBox(run, btnStart, btnStop, add, btnPrey, btnObs, btnHunt,slider, speedLabel, btnReset, btnClrPrey, btnClrObs, btnClrHunt);// now add these buttons + labels to a HBox
 	}
 
 	/**
@@ -258,14 +278,19 @@ public class GUI extends Application {
 			rtPane.getChildren().add(l);	// add label	
 		}*/
 	}
-
+	
 
 	/* (non-Javadoc)
 	 * @see javafx.application.Application#start(javafx.stage.Stage)
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-	
+		
+		String musicFile = "src/SpaceMusic.mp3";     // For example
+
+		Media sound = new Media(new File(musicFile).toURI().toString());
+		MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
 		
 	   	 chooser = new JFileChooser("C:/Users/SamJo/Desktop/DroneIO");
 	   	 filter = new FileFilter() {
@@ -326,11 +351,13 @@ public class GUI extends Application {
 	    bp.setBottom(setButtons());										// set bottom pane with buttons
 
 	    
-	    Scene scene = new Scene(bp, 760, 660);							// set overall scene
+	    Scene scene = new Scene(bp, 1000, 800);							// set overall scene
         bp.prefHeightProperty().bind(scene.heightProperty());
         bp.prefWidthProperty().bind(scene.widthProperty());
-
-        primaryStage.setScene(scene);
+        Color c = Color.rgb(121, 129, 152);
+        Background fill = new Background(new BackgroundFill(c,CornerRadii.EMPTY,Insets.EMPTY));
+        bp.setBackground(fill);
+        primaryStage.setScene(scene);	
         primaryStage.show();
 	  
 

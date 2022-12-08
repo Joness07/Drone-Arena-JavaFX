@@ -1,10 +1,10 @@
 package DroneStarter;
 
-public class Obstacle extends Drone {
+public class Teleporter extends Drone {
 
-	public Obstacle(int i, int j) {
+	public Teleporter(int i, int j) {
 		super(i, j, 0);
-		type = 'o';
+		type = 't';
 		rad = 15;
 	}
 
@@ -18,6 +18,12 @@ public class Obstacle extends Drone {
 	protected void adjustDrones() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void tryToMove(DroneArena a) {
+		// TODO Auto-generated method stub
+	 
 	}
 
 	@Override

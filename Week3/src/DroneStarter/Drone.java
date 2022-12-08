@@ -67,6 +67,16 @@ public abstract class Drone implements Serializable{
 		return droneID; 
 		}
 
+	/**
+	 * <pre>
+	 * Function for moving drones
+	 * Includes calculating next position
+	 * Checks if it can move
+	 * If not, adjusts angle
+	 * <pre>
+	 * @param a 
+	 */
+	
 	protected void tryToMove(DroneArena a) { //try to move function decides if an object can go to a location
 		double dx = 0; 
 		double dy = 0;
