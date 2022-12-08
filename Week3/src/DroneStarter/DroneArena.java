@@ -24,6 +24,7 @@ public class DroneArena implements Serializable{
 	private DroneInterface DroneUI;
 	ArrayList<Drone> allDrones = new ArrayList<Drone>();
 	ArrayList<Drone> toRemove = new ArrayList<Drone>();
+	ArrayList<Drone> toAdd = new ArrayList<Drone>();
 	//ArrayList<Drone> AddedRDrone
 	
 	public void drawArena(MyCanvas mc) { //DO NOT TOUCH
@@ -47,6 +48,14 @@ public class DroneArena implements Serializable{
 			allDrones.remove(b);
 		}
 		toRemove.clear();
+	}
+	
+	public void addDrones() {
+		for (Drone b : toAdd) {
+			allDrones.add(b);
+		
+		}
+		toAdd.clear();
 	}
 	
 	public boolean checkHitWithD(Drone target) {
@@ -148,8 +157,22 @@ public class DroneArena implements Serializable{
 			counter ++;
 		}
 	
-		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
+		while(!canMoveHere(valx, valy, 20, -1) && counter < 100);
 			allDrones.add(new Prey(valx, valy, angle)); //adds drone to array
+	}
+	public void addPrey(int x, int y) {
+		randomGen = new Random();
+		double angle;
+		int counter = 0;
+		do {
+			angle = randomGen.nextFloat() * 360;
+			counter ++;
+		}
+	
+		while(!canMoveHere(x, y, 20, -1) && counter < 100);
+		if(canMoveHere(x,y,20,-1)) {
+			toAdd.add(new Prey(x, y, angle)); //adds drone to array
+		}
 	}
 	
 	public void addObs() {
@@ -182,6 +205,20 @@ public class DroneArena implements Serializable{
 		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
 			allDrones.add(new Hunter(valx, valy, angle)); //adds drone to array
 	}
+	public void addTele() {
+		randomGen = new Random();
+		int valx;
+		int valy;
+		int counter = 0;
+		do {
+			valx = randomGen.nextInt(sizeX); //creates random xPos
+			valy = randomGen.nextInt(sizeY);
+			counter ++;
+		}
+	
+		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
+			allDrones.add(new Teleporter(valx, valy)); //adds drone to array
+	}
 	public void reset() {
 		for(Drone d : allDrones) {
 			toRemove.add(d);
@@ -207,6 +244,14 @@ public class DroneArena implements Serializable{
 	public void clearHunter() {
 		for(Drone d : allDrones) {
 			if(d instanceof Hunter) {
+				toRemove.add(d);
+			}
+		}
+		deleteDrones();
+	}
+	public void clearTele() {
+		for(Drone d : allDrones) {
+			if(d instanceof Teleporter) {
 				toRemove.add(d);
 			}
 		}

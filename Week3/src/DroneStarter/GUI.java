@@ -55,6 +55,7 @@ public class GUI extends Application {
 	JFileChooser chooser;
 	FileFilter filter;
 	MediaPlayer mediaPlayer;
+	String bStyle = "-fx-font-family: Comic Sans; -fx-font-size: 14px; -fx-font-weight: bold;";
 	/**
 	 * function to show in a box ABout the programme
 	 */
@@ -134,8 +135,6 @@ public class GUI extends Application {
 	 */
 	
 	private HBox setButtons() {
-
-		String bStyle = "-fx-font-family: Comic Sans; -fx-font-size: 14px; -fx-font-weight: bold;";
 		
 	    Button btnStart = new Button("Start");
 	    btnStart.setStyle(bStyle);
@@ -184,6 +183,15 @@ public class GUI extends Application {
 	           	drawWorld();
 	       }
 	    });
+	    Button btnTele = new Button("Planet");				// now button for stop
+	    btnTele.setStyle(bStyle);
+	    btnTele.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.addTele();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
 	    Button btnReset = new Button("Reset");				// now button for stop
 	    btnReset.setStyle(bStyle);
 	    btnReset.setOnAction(new EventHandler<ActionEvent>() {
@@ -220,6 +228,16 @@ public class GUI extends Application {
 	           	drawWorld();
 	       }
 	    });
+	    Button btnClrTele = new Button("Clear Planets");				// now button for stop
+	    btnClrTele.setStyle(bStyle);
+	    btnClrTele.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.clearTele();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
+	    
 	    
 		Slider slider = new Slider(0, 10, 2);
 		slider.setPrefWidth(200);
@@ -246,7 +264,7 @@ public class GUI extends Application {
 		speedLabel.setStyle(bStyle);
 		
 		
-	    return new HBox(run, btnStart, btnStop, add, btnPrey, btnObs, btnHunt,slider, speedLabel, btnReset, btnClrPrey, btnClrObs, btnClrHunt);// now add these buttons + labels to a HBox
+	    return new HBox(run, btnStart, btnStop, add, btnPrey, btnObs, btnHunt,btnTele ,slider, speedLabel, btnReset, btnClrPrey, btnClrObs, btnClrHunt, btnClrTele);// now add these buttons + labels to a HBox
 	}
 
 	/**
@@ -270,13 +288,10 @@ public class GUI extends Application {
 	 * show where ball is, in pane on right
 	 */
 	public void drawStatus() {
-		rtPane.getChildren().clear();					// clear rtpane
+		rtPane.getChildren().clear();// clear rtpane
 		//ArrayList<String> allBs = arena.toString();
 		rtPane.getChildren().add(new Label(arena.toString()));	// add label
-		/*for (String s : allBs) {
-			Label l = new Label(s); 		// turn description into a label
-			rtPane.getChildren().add(l);	// add label	
-		}*/
+		rtPane.setStyle(bStyle);
 	}
 	
 
@@ -319,24 +334,25 @@ public class GUI extends Application {
 	    bp.setTop(setMenu());											// put menu at the top
 
 	    Group root = new Group();										// create group with canvas
-	    Canvas canvas = new Canvas( 400, 500 );
-	    Image bg = new Image(new FileInputStream("src/bgwbpng.png"));
+	    Canvas canvas = new Canvas( 800, 600 );
+	    Image bg = new Image(new FileInputStream("src/newbg.png"));
 	    
 	    ImageView mv = new ImageView(bg);
 	    root.getChildren().addAll(mv, canvas);
 	    bp.setLeft(root);												// load canvas to left area
 	
-	    mc = new MyCanvas(canvas.getGraphicsContext2D(), 400, 500);
+	    mc = new MyCanvas(canvas.getGraphicsContext2D(), 800, 600);
 
 	    setMouseEvents(canvas);											// set up mouse events
 
-	    arena = new DroneArena(400, 500);								// set up arena
+	    arena = new DroneArena(800, 600);								// set up arena
 	    drawWorld();
 	    
 	    timer = new AnimationTimer() {									// set up timer
 	        public void handle(long currentNanoTime) {					// and its action when on
 	        		arena.moveAllDrones();
 	        		arena.deleteDrones();// check the angle of all balls								// move all balls
+	        		arena.addDrones();
 		            drawWorld();
 		            drawStatus();// redraw the world;
 	        }
@@ -351,7 +367,7 @@ public class GUI extends Application {
 	    bp.setBottom(setButtons());										// set bottom pane with buttons
 
 	    
-	    Scene scene = new Scene(bp, 1000, 800);							// set overall scene
+	    Scene scene = new Scene(bp, 1200, 800);							// set overall scene
         bp.prefHeightProperty().bind(scene.heightProperty());
         bp.prefWidthProperty().bind(scene.widthProperty());
         Color c = Color.rgb(121, 129, 152);

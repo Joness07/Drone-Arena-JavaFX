@@ -1,5 +1,7 @@
 package DroneStarter;
 
+import java.util.Random;
+
 public class Hunter extends Drone{
 
 	public Hunter(int i, int j, double a) {
@@ -26,6 +28,21 @@ public class Hunter extends Drone{
 		if(d instanceof Prey) { //if drone is prey, add to remove
 			droneArena.toRemove.add(d); //adds prey to be removed
 			return false;
+		}
+		if(d instanceof Teleporter) {
+			randomGen = new Random();
+			int valx;
+			int valy;
+			int counter = 0;
+			valx = randomGen.nextInt(droneArena.getXsize()); //creates random xPos
+			valy = randomGen.nextInt(droneArena.getYsize());
+			if(droneArena.canMoveHere(valx, valy, 10, -1) && counter < 100) {
+				d.xpos = valx;
+				d.ypos = valy;
+			}
+			else {
+				counter++;
+			}
 		}
 		else {
 			angle = Math.toDegrees(Math.atan2(Wantypos - d.ypos, Wantxpos - d.xpos));

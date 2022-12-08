@@ -1,11 +1,14 @@
 package DroneStarter;
 
+import java.util.Random;
+
 public class Teleporter extends Drone {
 
 	public Teleporter(int i, int j) {
 		super(i, j, 0);
 		type = 't';
 		rad = 15;
+		randomGen = new Random();
 	}
 
 	@Override
@@ -20,10 +23,17 @@ public class Teleporter extends Drone {
 		
 	}
 
+	private int timer = 0;
 	@Override
 	protected void tryToMove(DroneArena a) {
-		// TODO Auto-generated method stub
-	 
+		if(timer == 60*10) {
+			double angle = randomGen.nextFloat() * 360;
+			double vx = xpos + (rad+25)*Math.cos(angle);
+			double vy = ypos + (rad+25)*Math.sin(angle);
+			a.addPrey((int)vx,(int)vy);
+			timer = 0;
+		}
+		else timer++;
 	}
 
 	@Override

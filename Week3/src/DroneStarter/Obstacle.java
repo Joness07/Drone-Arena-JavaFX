@@ -19,10 +19,15 @@ public class Obstacle extends Drone {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	protected void tryToMove(DroneArena a) { //try to move function decides if an object can go to a location
+		
+	}
 
 	@Override
 	protected boolean doHitDrone(Drone d, DroneArena droneArena) {
-		return true;
+		return false;
 		// TODO Auto-generated method stub
 		
 	}

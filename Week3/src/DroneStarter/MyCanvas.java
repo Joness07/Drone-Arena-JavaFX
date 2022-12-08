@@ -19,7 +19,7 @@ public class MyCanvas {
 	int xCanvasSize = 512;				// constants for relevant sizes
 	int yCanvasSize = 512;
     GraphicsContext gc; 
-    private static Image preyImage, hunterImage, obsImage;
+    private static Image preyImage, hunterImage, obsImage, teleImage;
 
     /**
      * onstructor sets up relevant Graphics context and size of canvas
@@ -34,6 +34,7 @@ public class MyCanvas {
     		preyImage = new Image(new FileInputStream("src/UFO.png"));
     		hunterImage = new Image(new FileInputStream("src/asteroid.png"));
     		obsImage = new Image(new FileInputStream("src/star.png"));
+    		teleImage = new Image(new FileInputStream("src/earth.png"));
     	}catch(FileNotFoundException e) {
     		System.out.println("Image not Loaded");
     	}
@@ -122,6 +123,10 @@ public class MyCanvas {
 		if(type == 'o') {
 			Image i3 = obsImage;
 			gc.setFill(new ImagePattern(i3));
+		}
+		if(type == 't') {
+			Image i4 = teleImage;
+			gc.setFill(new ImagePattern(i4));
 		}
 		showCircle(x,y,rad);
 	}
