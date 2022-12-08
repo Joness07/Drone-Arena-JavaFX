@@ -34,6 +34,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -61,7 +66,7 @@ public class GUI extends Application {
 	    Alert alert = new Alert(AlertType.INFORMATION);				// define what box is
 	    alert.setTitle("About");									// say is About
 	    alert.setHeaderText(null);
-	    alert.setContentText("Drone Simulator");			// give text
+	    alert.setContentText("Space Simulator \nUFO moves around\nStar remains still\nAsteroid destorys UFOs");			// give text
 	    alert.showAndWait();										// show box and wait for user to close
 	}
 	
@@ -157,7 +162,7 @@ public class GUI extends Application {
 	       }
 	    });
 
-	    Button btnPrey = new Button("Prey");				// now button for stop
+	    Button btnPrey = new Button("UFO");				// now button for stop
 	    btnPrey.setStyle(bStyle);
 	    btnPrey.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
@@ -167,7 +172,7 @@ public class GUI extends Application {
 	       }
 	    });
 	    
-	    Button btnObs = new Button("Obstacle");				// now button for stop
+	    Button btnObs = new Button("Star");				// now button for stop
 	    btnObs.setStyle(bStyle);
 	    btnObs.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
@@ -177,12 +182,21 @@ public class GUI extends Application {
 	       }
 	    });
 	    
-	    Button btnHunt = new Button("Hunter");				// now button for stop
+	    Button btnHunt = new Button("Asteroid");				// now button for stop
 	    btnHunt.setStyle(bStyle);
 	    btnHunt.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
 	           	arena.addHunt();								// and its action to stop the timer
+	           	drawWorld();
+	       }
+	    });
+	    Button btnReset = new Button("Reset");				// now button for stop
+	    btnReset.setStyle(bStyle);
+	    btnReset.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	           	arena.reset();								// and its action to stop the timer
 	           	drawWorld();
 	       }
 	    });
@@ -206,13 +220,13 @@ public class GUI extends Application {
 		
 		Label run = new Label("Run: ");
 		run.setStyle(bStyle);
-		Label add = new Label("Add: ");
+		Label add = new Label(" Add: ");
 		add.setStyle(bStyle);
-		Label speedLabel = new Label("Speed");
+		Label speedLabel = new Label(" Speed");
 		speedLabel.setStyle(bStyle);
 		
 		
-	    return new HBox(run, btnStart, btnStop, add, btnPrey, btnObs, btnHunt,slider, speedLabel);// now add these buttons + labels to a HBox
+	    return new HBox(run, btnStart, btnStop, add, btnPrey, btnObs, btnHunt,slider, speedLabel, btnReset);// now add these buttons + labels to a HBox
 	}
 
 	/**
@@ -273,7 +287,7 @@ public class GUI extends Application {
 				
 		// TODO Auto-generated method stub
 		primaryStage.setTitle("Space Simulator");
-		primaryStage.getIcons().add(new Image("C:/Users/SamJo/Desktop/DroneSimulator/Icon.png"));
+		primaryStage.getIcons().add(new Image(new FileInputStream("src/Icon.png")));
 	    BorderPane bp = new BorderPane();
 	    bp.setPadding(new Insets(10, 20, 10, 20));
 
@@ -281,7 +295,8 @@ public class GUI extends Application {
 
 	    Group root = new Group();										// create group with canvas
 	    Canvas canvas = new Canvas( 400, 500 );
-	    Image bg = new Image("C:/Users/SamJo/Desktop/DroneSimulator/bg.png");
+	    Image bg = new Image(new FileInputStream("src/bgwbpng.png"));
+	    
 	    ImageView mv = new ImageView(bg);
 	    root.getChildren().addAll(mv, canvas);
 	    bp.setLeft(root);												// load canvas to left area
@@ -301,6 +316,7 @@ public class GUI extends Application {
 		            drawStatus();// redraw the world;
 	        }
 	    };
+	    
 
 	    rtPane = new VBox();											// set vBox on right to list items
 		rtPane.setAlignment(Pos.TOP_LEFT);								// set alignment
@@ -310,7 +326,7 @@ public class GUI extends Application {
 	    bp.setBottom(setButtons());										// set bottom pane with buttons
 
 	    
-	    Scene scene = new Scene(bp, 1000, 900);							// set overall scene
+	    Scene scene = new Scene(bp, 760, 660);							// set overall scene
         bp.prefHeightProperty().bind(scene.heightProperty());
         bp.prefWidthProperty().bind(scene.widthProperty());
 

@@ -54,7 +54,7 @@ public class DroneInterface {
 	        	switch (ch) {
 	    				case 'A' :
 	    				case 'a' :
-	    					myArena.addBall();	// add a new drone to arena
+	    					myArena.addPrey();	// add a new drone to arena
     						break;
 	        		case 'I' :
 	        		case 'i' :

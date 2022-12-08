@@ -88,11 +88,6 @@ public class DroneArena implements Serializable{
 			result = -d.angle;
 		}
 		
-//		if(checkDrone(d)) {
-//			System.out.print("Other Drone");
-//			result = d.angle;
-//		}
-		
 		if(result < 0) {
 			result += 360; //makes result 0-360
 		}
@@ -187,6 +182,12 @@ public class DroneArena implements Serializable{
 	
 		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
 			allDrones.add(new Hunter(valx, valy, angle)); //adds drone to array
+	}
+	public void reset() {
+		for(Drone d : allDrones) {
+			toRemove.add(d);
+		}
+		deleteDrones();
 	}
 
 
