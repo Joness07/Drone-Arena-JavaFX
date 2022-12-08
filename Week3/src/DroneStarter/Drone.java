@@ -1,5 +1,4 @@
 package DroneStarter;
-//testing pull
 import java.io.Serializable;
 
 import java.util.Random;
@@ -23,73 +22,69 @@ public abstract class Drone implements Serializable{
 	protected int ySize = 500;//Arena.getYsize(); //fetches YSize
 
 	public Drone(int i, int j, double a) {
-		// TODO Auto-generated constructor stub
+		
 		droneID = droneCount; //constructor
 		droneCount ++;
 		xpos = i;
 		ypos = j;
 		angle = a;
 		type = 'z';
-		//this.dir = n;
 	}
 	
+	//abstract methods either changed or unused in subclasses
 	protected abstract void checkDrone(DroneArena b);
 	
 	protected abstract void adjustDrones();
 
-	
 	protected abstract boolean doHitDrone(Drone d, DroneArena droneArena);
 
 	
-	public void drawDrone(MyCanvas mc) {
+	public void drawDrone(MyCanvas mc) { //draws drone on canvas
 		mc.showCircle(xpos, ypos, rad, type);
 	}
-	
-	public void displayDrone(ConsoleCanvas c) {
-		c.showIt(xpos, ypos, 'D'); //puts D in s
-	}
 
-	public String toString() {
+	public String toString() { //display drone details on panel
 		double roundedX = Math.round(xpos * 100)/100.0; //two decimal places
 		double roundedY = Math.round(ypos * 100)/100.0; //two decimal places
 		double roundedAngle = Math.round(angle * 100)/100.0; //two decimal places
 		String res = "Drone " + droneID + " at x=" + (int)xpos + " y=" + (int)ypos + " angle " + (int)angle + " speed " + speed + " rad " + rad + "\n";
 		return res; //string for output (drone info)
 	}
+	
 	public int getDroneC(){
 		return droneCount;  //gets drone count
 	}
-	public double getXpos() { //gets xPos of drone
+	public double getXpos() { //gets xPos
 		return xpos;
 	}
-	public double getYpos() { //gets yPos of drone
+	public double getYpos() { //gets yPos
 		return ypos;
 	}
-	public double getRad() { 
-		return rad; //gets ball radius
+	public double getRad() { //gets radius
+		return rad; 
 		}
-	public int getID() {
+	public int getID() { //gets ID
 		return droneID; 
 		}
 
-	protected void tryToMove(DroneArena a) {
-		double dx = 0;
+	protected void tryToMove(DroneArena a) { //try to move function decides if an object can go to a location
+		double dx = 0; 
 		double dy = 0;
 		
 		double radAngle = Math.toRadians(angle);
 		speed = GUI.sliderValue;
-		dx = speed * Math.cos(radAngle);
-		dy = speed * Math.sin(radAngle);
+		dx = speed * Math.cos(radAngle); //dx = temp value for how much x should change
+		dy = speed * Math.sin(radAngle); //dy = temp value for how much y should change
 		
-		Wantxpos = xpos + dx;
-		Wantypos = ypos + dy;
+		Wantxpos = xpos + dx; //Wantxpos = where it wants to move (x)
+		Wantypos = ypos + dy; //Wantypos = where it wants to move (y)
 		
-		if(a.canMoveHere(xpos + dx, ypos + dy, rad, droneID)) {
-			xpos += dx;
-			ypos += dy;
+		if(a.canMoveHere(xpos + dx, ypos + dy, rad, droneID)) { //if canMoveHere returns true, then move drone to new position
+			xpos += dx; //updates Xpos
+			ypos += dy; //updates Ypos
 		}
 		else{
-			Drone d = a.getDroneAt(Wantxpos, Wantypos, rad, droneID);
+			Drone d = a.getDroneAt(Wantxpos, Wantypos, rad, droneID); 
 			if(d == null) {
 				angle = a.adjustAngle(this);
 			}
