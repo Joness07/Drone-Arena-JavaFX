@@ -30,14 +30,7 @@ public class MyCanvas {
     	gc = g;
     	xCanvasSize = xcs;
     	yCanvasSize = ycs;
-    	try {
-    		preyImage = new Image(new FileInputStream("src/UFO.png"));
-    		hunterImage = new Image(new FileInputStream("src/asteroid.png"));
-    		obsImage = new Image(new FileInputStream("src/star.png"));
-    		teleImage = new Image(new FileInputStream("src/earth.png"));
-    	}catch(FileNotFoundException e) {
-    		System.out.println("Image not Loaded");
-    	}
+    	loadImages();
     	
     	gc.drawImage(null, xcs, ycs);
     }
@@ -47,6 +40,16 @@ public class MyCanvas {
      */
     public int getXCanvasSize() {
     	return xCanvasSize;
+    }
+    private static void loadImages() {
+    	try {
+    		preyImage = new Image(new FileInputStream("src/UFO.png"));
+    		hunterImage = new Image(new FileInputStream("src/asteroid.png"));
+    		obsImage = new Image(new FileInputStream("src/star.png"));
+    		teleImage = new Image(new FileInputStream("src/earth.png"));
+    	}catch(FileNotFoundException e) {
+    		System.out.println("Image not Loaded");
+    	}
     }
     /**
      * get size of xcanvas in y    
