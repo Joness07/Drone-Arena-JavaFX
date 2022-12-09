@@ -248,7 +248,7 @@ public class GUI extends Application {
 		slider.setBlockIncrement(1);
 		slider.setSnapToTicks(true);
 		
-		sliderValue = 2; //initial value for speed. COCK > Mustafa
+		sliderValue = 2;
 		
 		slider.valueProperty().addListener(new ChangeListener<Number>() { //listener for slider
 			
