@@ -330,7 +330,7 @@ public class GUI extends Application {
 				
 		// TODO Auto-generated method stub
 		primaryStage.setTitle("Space Simulator");
-		primaryStage.getIcons().add(new Image(new FileInputStream("src/Icon.png"))); //icon
+		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/Icon.png"))); //icon
 	    BorderPane bp = new BorderPane();
 	    bp.setPadding(new Insets(10, 20, 10, 20));
 
@@ -338,7 +338,7 @@ public class GUI extends Application {
 
 	    Group root = new Group();										// create group with canvas
 	    Canvas canvas = new Canvas( 800, 600 );
-	    Image bg = new Image(new FileInputStream("src/newbg.png"));
+	    Image bg = new Image(getClass().getResourceAsStream("/newbg.png"));
 	    
 	    ImageView mv = new ImageView(bg);
 	    root.getChildren().addAll(mv, canvas);
