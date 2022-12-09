@@ -35,7 +35,7 @@ public class Prey extends Drone {
 
 	@Override
 	public boolean doHitDrone(Drone d, DroneArena droneArena) {
-		if(d instanceof Teleporter) {
+		if(d instanceof Teleporter) { //teleporter moves if touched by assigning the teleporter a new xpos and ypos
 			randomGen = new Random();
 			int valx;
 			int valy;
@@ -50,7 +50,7 @@ public class Prey extends Drone {
 				counter++;
 			}
 		}
-		else {
+		else { //addjusts angle if it collides with anything except teleporter
 			System.out.println("Doing Angle: " + angle);
 			angle = Math.toDegrees(Math.atan2(Wantypos - d.ypos, Wantxpos - d.xpos)); 
 		}

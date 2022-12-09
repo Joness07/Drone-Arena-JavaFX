@@ -43,7 +43,7 @@ public class MyCanvas {
     }
     private static void loadImages() {
     	try {
-    		preyImage = new Image(new FileInputStream("src/UFO.png"));
+    		preyImage = new Image(new FileInputStream("src/UFO.png")); //images for each class
     		hunterImage = new Image(new FileInputStream("src/asteroid.png"));
     		obsImage = new Image(new FileInputStream("src/star.png"));
     		teleImage = new Image(new FileInputStream("src/earth.png"));
@@ -108,7 +108,8 @@ public class MyCanvas {
 		gc.setFill(c);
 	}
 	/**
-	 * show the ball at position x,y , radius r in colour defined by col
+	 * Each image assigned to each class based on their char "type".
+	 * The char is different for each class E.G. prey = 'p'.
 	 * @param x
 	 * @param y
 	 * @param rad

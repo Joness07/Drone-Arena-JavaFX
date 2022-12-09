@@ -122,11 +122,23 @@ public class DroneArena implements Serializable{
 		}
 	}
 	public int getXsize() {
-		return sizeX;
+		return sizeX; //returns arena X
 	}
 	public int getYsize() {
-		return sizeY;
+		return sizeY; //returns arena Y
 	}
+	
+	/**
+	 * <pre>
+	 * Function for seeing if a drone is at location passed in
+	 * Considers radius values 
+	 * <pre>
+	 * @param x
+	 * @param y
+	 * @param rad
+	 * @param ID
+	 * @return
+	 */
 	
 	public Drone getDroneAt(double x, double y, int rad, int ID) { //gets drone at location
 		for(Drone d : allDrones) {
@@ -144,7 +156,7 @@ public class DroneArena implements Serializable{
 	public void clearDrones() {
 		allDrones = null;
 	}
-	public void addPrey() {
+	public void addPrey() { //function for adding Prey Drones
 		randomGen = new Random();
 		int valx;
 		int valy;
@@ -160,7 +172,7 @@ public class DroneArena implements Serializable{
 		while(!canMoveHere(valx, valy, 20, -1) && counter < 100);
 			allDrones.add(new Prey(valx, valy, angle)); //adds drone to array
 	}
-	public void addPrey(int x, int y) {
+	public void addPrey(int x, int y) { //function for adding Prey Drones via Teleporter Class
 		randomGen = new Random();
 		double angle;
 		int counter = 0;
@@ -175,7 +187,7 @@ public class DroneArena implements Serializable{
 		}
 	}
 	
-	public void addObs() {
+	public void addObs() { //function for adding Obstacles
 		randomGen = new Random();
 		int valx;
 		int valy;
@@ -189,7 +201,7 @@ public class DroneArena implements Serializable{
 		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
 			allDrones.add(new Obstacle(valx, valy)); //adds drone to array
 	}
-	public void addHunt() {
+	public void addHunt() { //function for adding Hunter Drones
 		randomGen = new Random();
 		int valx;
 		int valy;
@@ -219,13 +231,13 @@ public class DroneArena implements Serializable{
 		while(!canMoveHere(valx, valy, 10, -1) && counter < 100);
 			allDrones.add(new Teleporter(valx, valy)); //adds drone to array
 	}
-	public void reset() {
+	public void reset() { //clears ALL drones
 		for(Drone d : allDrones) {
 			toRemove.add(d);
 		}
 		deleteDrones();
 	}
-	public void clearPrey() {
+	public void clearPrey() { //clears prey drones
 		for(Drone d : allDrones) {
 			if(d instanceof Prey) {
 				toRemove.add(d);
@@ -233,7 +245,7 @@ public class DroneArena implements Serializable{
 		}
 		deleteDrones();
 	}
-	public void clearObs() {
+	public void clearObs() { //clears obstacle drones
 		for(Drone d : allDrones) {
 			if(d instanceof Obstacle) {
 				toRemove.add(d);
@@ -241,7 +253,7 @@ public class DroneArena implements Serializable{
 		}
 		deleteDrones();
 	}
-	public void clearHunter() {
+	public void clearHunter() {//clears hunter  drones
 		for(Drone d : allDrones) {
 			if(d instanceof Hunter) {
 				toRemove.add(d);
@@ -249,7 +261,7 @@ public class DroneArena implements Serializable{
 		}
 		deleteDrones();
 	}
-	public void clearTele() {
+	public void clearTele() { //clears teleport drones
 		for(Drone d : allDrones) {
 			if(d instanceof Teleporter) {
 				toRemove.add(d);
@@ -259,7 +271,7 @@ public class DroneArena implements Serializable{
 	}
 
 
-	public String toString() {
+	public String toString() { //string for arena size
 		String Astring = "Arena size = " + sizeX + "*" + sizeY +"\n"; //prints arena size
 		for(int i = 0; i < allDrones.size(); i++) 
 			Astring += allDrones.get(i);//get drone(i)

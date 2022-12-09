@@ -55,7 +55,7 @@ public class GUI extends Application {
 	JFileChooser chooser;
 	FileFilter filter;
 	MediaPlayer mediaPlayer;
-	String bStyle = "-fx-font-family: Comic Sans; -fx-font-size: 14px; -fx-font-weight: bold;";
+	String bStyle = "-fx-font-family: Comic Sans; -fx-font-size: 14px; -fx-font-weight: bold;"; //style for fonts
 	/**
 	 * function to show in a box ABout the programme
 	 */
@@ -63,7 +63,7 @@ public class GUI extends Application {
 	    Alert alert = new Alert(AlertType.INFORMATION);				// define what box is
 	    alert.setTitle("About");									// say is About
 	    alert.setHeaderText(null);
-	    alert.setContentText("Space Simulator \nUFO moves around\nStar remains still\nAsteroid destorys UFOs");			// give text
+	    alert.setContentText("Space Simulator \nUFO moves around\nStar remains still and bounces off any collisions\nAsteroid destroys UFOs if they collide\nPlanets spawn UFOs and teleport when touched");// about tab information
 	    alert.showAndWait();										// show box and wait for user to close
 	}
 	
@@ -239,8 +239,8 @@ public class GUI extends Application {
 	    });
 	    
 	    
-		Slider slider = new Slider(0, 10, 2);
-		slider.setPrefWidth(200);
+		Slider slider = new Slider(0, 10, 2); //slider for speed
+		slider.setPrefWidth(200); //slider settings
 		slider.setShowTickMarks(true);
 		slider.setShowTickLabels(true);
 		slider.setMajorTickUnit(1);
@@ -248,15 +248,18 @@ public class GUI extends Application {
 		slider.setBlockIncrement(1);
 		slider.setSnapToTicks(true);
 		
-		slider.valueProperty().addListener(new ChangeListener<Number>() {
+		sliderValue = 2; //initial value for speed. COCK > Mustafa
+		
+		slider.valueProperty().addListener(new ChangeListener<Number>() { //listener for slider
+			
 
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				sliderValue = (int)slider.getValue();
+				sliderValue = (int)slider.getValue(); //sets slider value to variable
 			}
 		});
 		
-		Label run = new Label("Run: ");
+		Label run = new Label("Run: "); //labels for GUI text
 		run.setStyle(bStyle);
 		Label add = new Label(" Add: ");
 		add.setStyle(bStyle);
@@ -301,11 +304,11 @@ public class GUI extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		String musicFile = "src/SpaceMusic.mp3";     // For example
-
-		Media sound = new Media(new File(musicFile).toURI().toString());
-		MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
+//		String musicFile = "src/SpaceMusic.mp3";     // music file
+//
+//		Media sound = new Media(new File(musicFile).toURI().toString()); //assigns music file to sound media type
+//		MediaPlayer mediaPlayer = new MediaPlayer(sound); 
+//        mediaPlayer.play(); //plays music
 		
 	   	 chooser = new JFileChooser("C:/Users/SamJo/Desktop/DroneIO");
 	   	 filter = new FileFilter() {
@@ -327,7 +330,7 @@ public class GUI extends Application {
 				
 		// TODO Auto-generated method stub
 		primaryStage.setTitle("Space Simulator");
-		primaryStage.getIcons().add(new Image(new FileInputStream("src/Icon.png")));
+		primaryStage.getIcons().add(new Image(new FileInputStream("src/Icon.png"))); //icon
 	    BorderPane bp = new BorderPane();
 	    bp.setPadding(new Insets(10, 20, 10, 20));
 
@@ -371,7 +374,7 @@ public class GUI extends Application {
         bp.prefHeightProperty().bind(scene.heightProperty());
         bp.prefWidthProperty().bind(scene.widthProperty());
         Color c = Color.rgb(121, 129, 152);
-        Background fill = new Background(new BackgroundFill(c,CornerRadii.EMPTY,Insets.EMPTY));
+        Background fill = new Background(new BackgroundFill(c,CornerRadii.EMPTY,Insets.EMPTY)); //changes background colour
         bp.setBackground(fill);
         primaryStage.setScene(scene);	
         primaryStage.show();

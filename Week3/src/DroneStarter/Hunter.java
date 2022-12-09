@@ -29,19 +29,20 @@ public class Hunter extends Drone{
 			droneArena.toRemove.add(d); //adds prey to be removed
 			return false;
 		}
-		if(d instanceof Teleporter) {
+		if(d instanceof Teleporter) { //if the drone hits teleporter then the teleporter gets assigned new xpos & ypos
 			randomGen = new Random();
 			int valx;
 			int valy;
 			int counter = 0;
 			valx = randomGen.nextInt(droneArena.getXsize()); //creates random xPos
 			valy = randomGen.nextInt(droneArena.getYsize());
-			if(droneArena.canMoveHere(valx, valy, 10, -1) && counter < 100) {
+			if(droneArena.canMoveHere(valx, valy, 10, -1) && counter < 100) { //attempts 100 times, if cannot create then doesn't. Used if arena is full.
 				d.xpos = valx;
 				d.ypos = valy;
 			}
 			else {
-				counter++;
+				counter++; 
+				
 			}
 		}
 		else {

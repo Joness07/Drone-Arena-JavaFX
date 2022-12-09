@@ -94,23 +94,32 @@ public abstract class Drone implements Serializable{
 			ypos += dy; //updates Ypos
 		}
 		else{
-			Drone d = a.getDroneAt(Wantxpos, Wantypos, rad, droneID); 
+			Drone d = a.getDroneAt(Wantxpos, Wantypos, rad, droneID); //detects if drone is at location of desired location
 			if(d == null) {
 				angle = a.adjustAngle(this);
 			}
 			else {
-				System.out.println("A.CheckDrone Called");
 				doHitDrone(d, a);
 			}
 			
 		}
 	}
 	
+
+/**
+ * 	<pre>
+ * Function for seeing if a drone is
+ * hitting another drone
+ * <pre>
+ * @param ox
+ * @param oy
+ * @param or
+ * @return
+ */
 	public boolean hitting(double ox, double oy, double or) {
 		double distanceD, r;
 		distanceD = Math.sqrt(((ox-xpos)*(ox-xpos) + (oy-ypos)*(oy-ypos)));
 		r = or+rad;
-		System.out.println("r " + r + " distanceD " + distanceD + " ox " + ox + " oy " + oy);
 		if (distanceD > r){
 			return true;
 		}

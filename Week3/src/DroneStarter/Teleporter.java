@@ -26,12 +26,12 @@ public class Teleporter extends Drone {
 	private int timer = 0;
 	@Override
 	protected void tryToMove(DroneArena a) {
-		if(timer == 60*10) {
+		if(timer == 60*10) { //every 60 seconds spawn new drone at location around radius of this drone
 			double angle = randomGen.nextFloat() * 360;
 			double vx = xpos + (rad+25)*Math.cos(angle); //creates position outside radius
 			double vy = ypos + (rad+25)*Math.sin(angle);
 			a.addPrey((int)vx,(int)vy); //adds drone 
-			timer = 0;
+			timer = 0; //timer resets
 		}
 		else timer++;
 	}
